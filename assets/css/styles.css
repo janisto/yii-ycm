@@ -1,0 +1,33 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+.sidebar-nav {
+	padding: 9px 0;
+}
+.filters input, .filters select {
+	width: 100%;
+	margin: 1px;
+}
+.preview-image {
+	max-width: 200px;
+	border: 1px solid #333;
+	margin-top: 5px
+}
+.modal-image {
+	max-width: 100%;
+	max-height: 100%;
+}
+.redactor_box {
+	margin-bottom: 10px;
+}
+.ui-timepicker-div dl dt, .ui-timepicker-div dl dd {
+	font-size: 0.9em;
+	font-weight: normal;
+}
+.ui-timepicker-div dl dd {
+	padding-top: 4px;
+}
+.ui-timepicker-div dl dd.ui_tpicker_time {
+	padding-top: 0;
+}
