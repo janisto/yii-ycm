@@ -285,8 +285,35 @@ class YcmModule extends CWebModule
 				echo $form->textFieldRow($model,$attribute,array('class'=>'span5'));
 				break;
 
+			case 'chosen':
+				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
+				$options=array(
+					'empty'=>YcmModule::t('Choose').' '.$attribute,
+					'class'=>'span5 chzn-select'
+				);
+				if ($attributeOptions) {
+					$options=array_merge($options,$attributeOptions);
+				}
+				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),$options);
+				break;
+
+			case 'chosenMultiple':
+				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
+				$options=array(
+					'data-placeholder'=>YcmModule::t('Choose').' '.$attribute,
+					'multiple'=>'multiple',
+					'class'=>'span5 chzn-select'
+				);
+				if ($attributeOptions) {
+					$options=array_merge($options,$attributeOptions);
+				}
+				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),$options);
+				break;
+
 			case 'dropDown':
-				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),array('empty'=>YcmModule::t('- select -'),'class'=>'span5'));
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),array('empty'=>YcmModule::t('Choose').' '.$attribute,'class'=>'span5'));
 				break;
 
 			case 'radioButton':
