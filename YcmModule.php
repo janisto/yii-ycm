@@ -4,7 +4,7 @@
  * YcmModule
  * 
  * @uses CWebModule
- * @version 0.1
+ * @version 0.2-dev
  * @copyright 2012
  * @author Jani Mikkonen <janisto@php.net>
  * @license public domain
@@ -19,10 +19,12 @@ class YcmModule extends CWebModule
 	protected $registerModels=array();
 	protected $excludeModels=array();
 	protected $attributesWidgets=null;
-	public static $name='ycm';
 	public $password;
 	public $uploadPath;
 	public $uploadUrl;
+	public $uploadCreate=false;
+	public $redactorUpload=true;
+	public $permissions=0774;
 
 	/**
 	 * @param string $message the original message
@@ -39,7 +41,13 @@ class YcmModule extends CWebModule
 	public function init()
 	{
 		if($this->uploadPath===null) {
-			$this->uploadPath=realpath(Yii::app()->basePath.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'uploads');
+			$path=Yii::app()->basePath.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'uploads';
+			$this->uploadPath=realpath($path);
+			if($this->uploadPath===false && $this->uploadCreate===true) {
+				if (!mkdir($path,$this->permissions,true)) {
+					throw new CHttpException(500,'Could not create "uploads" folder: '.$path.'.');
+				}
+			}
 		}
 		if($this->uploadUrl===null) {
 			$this->uploadUrl=Yii::app()->request->baseUrl .'/uploads';
@@ -76,7 +84,7 @@ class YcmModule extends CWebModule
 	/**
 	 * Get a list of all models.
 	 *
-	 * @return array
+	 * @return array Models
 	 */
 	public function getModelsList()
 	{
@@ -107,7 +115,7 @@ class YcmModule extends CWebModule
 	/**
 	 * Add to the list of models.
 	 *
-	 * @param string $model
+	 * @param string $model Model name
 	 */
 	protected function addModel($model)
 	{
@@ -120,8 +128,8 @@ class YcmModule extends CWebModule
 	/**
 	 * Load model.
 	 *
-	 * @param string $model
-	 * @return object
+	 * @param string $model Model name
+	 * @return object Model
 	 */
 	public function loadModel($model)
 	{
@@ -134,8 +142,8 @@ class YcmModule extends CWebModule
 	 * Create TbActiveForm widget.
 	 *
 	 * @param TbActiveForm $form
-	 * @param object $model
-	 * @param string $attribute
+	 * @param object $model Model
+	 * @param string $attribute Model attribute
 	 */
 	public function createWidget($form,$model,$attribute)
 	{
@@ -257,7 +265,6 @@ class YcmModule extends CWebModule
 				$options=array(
 					'model'=>$model,
 					'attribute'=>$attribute,
-					//'htmlOptions'=>array('class'=>'span8'),
 					'options'=>array(
 						'lang'=>$lang,
 						'buttons'=>array(
@@ -269,6 +276,16 @@ class YcmModule extends CWebModule
 				);
 				if ($attributeOptions) {
 					$options=array_merge($options,$attributeOptions);
+				}
+				if($this->redactorUpload===true) {
+					$redactorOptions=array(
+						'options'=>array(
+							'imageUpload'=>Yii::app()->createUrl($this->name.'/model/redactorImageUpload',array('name'=>get_class($model),'attr'=>$attribute)),
+							'imageGetJson'=>Yii::app()->createUrl($this->name.'/model/redactorImageList',array('name'=>get_class($model),'attr'=>$attribute)),
+							'imageUploadErrorCallback'=>new CJavaScriptExpression('function(obj,json) { alert(json.error); }'),
+						),
+					);
+					$options=array_merge_recursive($options,$redactorOptions);
 				}
 				$this->controller->widget($this->name.'.extensions.redactor.ERedactorWidget',$options);
 				echo $form->error($model,$attribute);
@@ -390,7 +407,7 @@ class YcmModule extends CWebModule
 	/**
 	 * Get attributes widget.
 	 *
-	 * @param string $attribute
+	 * @param string $attribute Model attribute
 	 * @return null|string
 	 */
 	public function getAttributeWidget($attribute)
@@ -432,7 +449,7 @@ class YcmModule extends CWebModule
 	/**
 	 * Get attributes data.
 	 *
-	 * @param string $attribute
+	 * @param string $attribute Model attribute
 	 * @return null
 	 */
 	protected function getAttributeOptions($attribute)
@@ -449,7 +466,7 @@ class YcmModule extends CWebModule
 	 * Get an array of attribute choice values.
 	 * The variable or method name needs ​​to be: attributeChoices.
 	 *
-	 * @param string $attribute
+	 * @param string $attribute Model attribute
 	 * @return array
 	 */
 	private function getAttributeChoices($attribute)
@@ -519,6 +536,8 @@ class YcmModule extends CWebModule
 	}
 
 	/**
+	 * Download Excel?
+	 *
 	 * @param mixed $model
 	 * @return bool
 	 */
@@ -535,6 +554,8 @@ class YcmModule extends CWebModule
 	}
 
 	/**
+	 * Download MS CSV?
+	 *
 	 * @param mixed $model
 	 * @return bool
 	 */
@@ -551,6 +572,8 @@ class YcmModule extends CWebModule
 	}
 
 	/**
+	 * Download CSV?
+	 *
 	 * @param mixed $model
 	 * @return bool
 	 */

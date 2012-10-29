@@ -7,6 +7,69 @@ class ModelController extends AdminController
 	 */
 	public $defaultAction = 'list';
 
+	/**
+	 * Redactor image upload.
+	 *
+	 * @param string $name Model name
+	 * @param string $attr Model attribute
+	 * @throws CHttpException
+	 */
+	public function actionRedactorImageUpload($name,$attr)
+	{
+		// Make Yii think this is a AJAX request.
+		$_SERVER['HTTP_X_REQUESTED_WITH']='XMLHttpRequest';
+
+		$file=CUploadedFile::getInstanceByName('file');
+		if (is_object($file) && get_class($file)==='CUploadedFile') {
+			if (!in_array(strtolower($file->getExtensionName()),array('gif','png','jpg','jpeg'))) {
+				throw new CHttpException(500,CJSON::encode(array('error'=>'Invalid file extension.')));
+			}
+			$fileName=hash('sha256',uniqid(rand(),true)).'.'.$file->getExtensionName();
+			$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$attr;
+			if(!is_dir($columnPath)) {
+				if (!mkdir($columnPath,$this->module->permissions,true)) {
+					throw new CHttpException(500,CJSON::encode(array('error'=>'Could not create folder: '.$columnPath.'. Make sure "uploads" folder is writable.')));
+				}
+			}
+			$path=$columnPath.DIRECTORY_SEPARATOR.$fileName;
+			if(file_exists($path) || !$file->saveAs($path)) {
+				throw new CHttpException(500,CJSON::encode(array('error'=>'Could not save file or file exists: '.$path)));
+			}
+			$columnUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attr.'/'.$fileName;
+			$data = array(
+				'filelink'=>$columnUrl,
+			);
+			echo CJSON::encode($data);
+			exit();
+		} else {
+			throw new CHttpException(500,CJSON::encode(array('error'=>'Could not upload file')));
+		}
+	}
+
+	/**
+	 * Redactor image list.
+	 *
+	 * @param string $name Model name
+	 * @param string $attr Model attribute
+	 */
+	public function actionRedactorImageList($name,$attr)
+	{
+		$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$attr;
+		$columnUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attr.'/';
+		$files=CFileHelper::findFiles($columnPath,array('fileTypes'=>array('gif','png','jpg','jpeg')));
+		$data=array();
+		if ($files) {
+			foreach($files as $file) {
+				$data[]=array(
+					'thumb'=>$columnUrl.basename($file),
+					'image'=>$columnUrl.basename($file),
+				);
+			}
+		}
+		echo CJSON::encode($data);
+		exit();
+	}
+
     /**
      * List models.
 	 *
@@ -95,7 +158,7 @@ class ModelController extends AdminController
 						$fileName=hash('sha256',uniqid(rand(),true)).'.'.$file->getExtensionName();
 						$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$columnName;
 						if(!is_dir($columnPath)) {
-							if (!mkdir($columnPath,0644,true)) { // Read and write for owner, read for everybody else
+							if (!mkdir($columnPath,$this->module->permissions,true)) {
 								throw new CHttpException(500,'Could not create folder: '.$columnPath.'. Make sure "uploads" folder is writable.');
 							}
 						}
@@ -173,7 +236,7 @@ class ModelController extends AdminController
 						$fileName=hash('sha256',uniqid(rand(),true)).'.'.$file->getExtensionName();
 						$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$columnName;
 						if(!is_dir($columnPath)) {
-							if (!mkdir($columnPath,0644,true)) { // Read and write for owner, read for everybody else
+							if (!mkdir($columnPath,$this->module->permissions,true)) { // Read and write for owner, read for everybody else
 								throw new CHttpException(500,'Could not create folder: '.$columnPath.'. Make sure "uploads" folder is writable.');
 							}
 						}
