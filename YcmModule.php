@@ -15,24 +15,43 @@ class YcmModule extends CWebModule
 	private $controller;
 	private $_assetsUrl;
 	private $_modelsList=array();
-	protected $model;
 	protected $registerModels=array();
 	protected $excludeModels=array();
-	protected $attributesWidgets=null;
+	protected $attributesWidgets;
+	public $username;
 	public $password;
 	public $uploadPath;
 	public $uploadUrl;
 	public $uploadCreate=false;
 	public $redactorUpload=true;
 	public $permissions=0774;
+	public $translateCategory='YcmModule.ycm';
 
 	/**
-	 * @param string $message the original message
-	 * @return string the translated message
+	 * Load model.
+	 *
+	 * @param string $name Model name
+	 * @param null|int $pk Primary key
+	 * @throws CHttpException
+	 * @return object Model
 	 */
-	public static function t($message)
+	public function loadModel($name,$pk=null)
 	{
-		return Yii::t('YcmModule.ycm',$message);
+		$name=(string)$name;
+		if ($pk===null) {
+			$model=new $name;
+		} else {
+			$model=$name::model()->findByPk((int)$pk);
+			if($model===null) {
+				throw new CHttpException(500,Yii::t(
+					$this->translateCategory,
+					'Could not load model "{name}".',
+					array('{name}'=>$name)
+				));
+			}
+		}
+		$model->attachBehavior('admin',array('class'=>'application.modules.ycm.behaviors.FileBehavior'));
+		return $model;
 	}
 
 	/**
@@ -45,7 +64,11 @@ class YcmModule extends CWebModule
 			$this->uploadPath=realpath($path);
 			if($this->uploadPath===false && $this->uploadCreate===true) {
 				if (!mkdir($path,$this->permissions,true)) {
-					throw new CHttpException(500,'Could not create "uploads" folder: '.$path.'.');
+					throw new CHttpException(500,Yii::t(
+						$this->translateCategory,
+						'Could not create upload folder "{dir}".',
+						array('{dir}'=>$path)
+					));
 				}
 			}
 		}
@@ -84,7 +107,7 @@ class YcmModule extends CWebModule
 	/**
 	 * Get a list of all models.
 	 *
-	 * @return array Models
+	 * @return array Model names
 	 */
 	public function getModelsList()
 	{
@@ -126,19 +149,6 @@ class YcmModule extends CWebModule
 	}
 
 	/**
-	 * Load model.
-	 *
-	 * @param string $model Model name
-	 * @return object Model
-	 */
-	public function loadModel($model)
-	{
-		$model=(string)$model;
-		$this->model=new $model;
-		return $this->model;
-	}
-
-	/**
 	 * Create TbActiveForm widget.
 	 *
 	 * @param TbActiveForm $form
@@ -152,7 +162,7 @@ class YcmModule extends CWebModule
 			$lang='en';
 		}
 
-		$widget=$this->getAttributeWidget($attribute);
+		$widget=$this->getAttributeWidget($model,$attribute);
 		switch ($widget) {
 			case 'time':
 				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
@@ -280,9 +290,17 @@ class YcmModule extends CWebModule
 				if($this->redactorUpload===true) {
 					$redactorOptions=array(
 						'options'=>array(
-							'imageUpload'=>Yii::app()->createUrl($this->name.'/model/redactorImageUpload',array('name'=>get_class($model),'attr'=>$attribute)),
-							'imageGetJson'=>Yii::app()->createUrl($this->name.'/model/redactorImageList',array('name'=>get_class($model),'attr'=>$attribute)),
-							'imageUploadErrorCallback'=>new CJavaScriptExpression('function(obj,json) { alert(json.error); }'),
+							'imageUpload'=>Yii::app()->createUrl($this->name.'/model/redactorImageUpload',array(
+								'name'=>get_class($model),
+								'attr'=>$attribute)
+							),
+							'imageGetJson'=>Yii::app()->createUrl($this->name.'/model/redactorImageList',array(
+								'name'=>get_class($model),
+								'attr'=>$attribute)
+							),
+							'imageUploadErrorCallback'=>new CJavaScriptExpression(
+								'function(obj,json) { alert(json.error); }'
+							),
 						),
 					);
 					$options=array_merge_recursive($options,$redactorOptions);
@@ -305,20 +323,20 @@ class YcmModule extends CWebModule
 			case 'chosen':
 				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
-					'empty'=>YcmModule::t('Choose').' '.$attribute,
+					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$attribute,
 					'class'=>'span5 chzn-select'
 				);
 				if ($attributeOptions) {
 					$options=array_merge($options,$attributeOptions);
 				}
 				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
-				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),$options);
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
 
 			case 'chosenMultiple':
 				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
-					'data-placeholder'=>YcmModule::t('Choose').' '.$attribute,
+					'data-placeholder'=>Yii::t($this->translateCategory,'Choose').' '.$attribute,
 					'multiple'=>'multiple',
 					'class'=>'span5 chzn-select'
 				);
@@ -326,15 +344,18 @@ class YcmModule extends CWebModule
 					$options=array_merge($options,$attributeOptions);
 				}
 				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
-				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),$options);
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
 
 			case 'dropDown':
-				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($attribute),array('empty'=>YcmModule::t('Choose').' '.$attribute,'class'=>'span5'));
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),array(
+					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$attribute,
+					'class'=>'span5')
+				);
 				break;
 
 			case 'radioButton':
-				echo $form->radioButtonListRow($model,$attribute,$this->getAttributeChoices($attribute));
+				echo $form->radioButtonListRow($model,$attribute,$this->getAttributeChoices($model,$attribute));
 				break;
 
 			case 'boolean':
@@ -350,40 +371,37 @@ class YcmModule extends CWebModule
 				break;
 
 			case 'file':
-				$columnName=$model->tableSchema->columns[$attribute]->name;
-				$columnPath=$this->uploadUrl.'/'. strtolower(get_class($model)).'/'.$columnName.'/';
-				if (!$model->isNewRecord && !empty($model->$columnName)) {
-					$path=$columnPath.$model->$columnName;
+				if (!$model->isNewRecord && !empty($model->$attribute)) {
 					ob_start();
 					echo '<p>';
 					$this->controller->widget('bootstrap.widgets.TbButton', array(
-						'label'=>YcmModule::t('Download'),
+						'label'=>Yii::t($this->translateCategory,'Download'),
 						'type'=>'',
-						'url'=>$path,
+						'url'=>$model->getFileUrl($attribute),
 					));
 					echo '</p>';
 					$html=ob_get_clean();
-					echo $form->fileFieldRow($model,$columnName,array('class'=>'span5','hint'=>$html));
+					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5','hint'=>$html));
 				} else {
-					echo $form->fileFieldRow($model,$columnName,array('class'=>'span5'));
+					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5'));
 				}
 				break;
 
 			case 'image':
-				$columnName=$model->tableSchema->columns[$attribute]->name;
-				$columnPath=$this->uploadUrl.'/'. strtolower(get_class($model)).'/'.$columnName.'/';
-				if (!$model->isNewRecord && !empty($model->$columnName)) {
-					$path=$columnPath.$model->$columnName;
-					$modalName='modal-image-'.$columnName;
-					$image=CHtml::image($path,YcmModule::t('Image'),array('class'=>'modal-image'));
+				if (!$model->isNewRecord && !empty($model->$attribute)) {
+					$modalName='modal-image-'.$attribute;
+					$image=CHtml::image($model->getFileUrl($attribute),Yii::t($this->translateCategory,'Image'),array(
+						'class'=>'modal-image')
+					);
 					ob_start();
 					$this->controller->beginWidget('bootstrap.widgets.TbModal',array('id'=>$modalName));
-					echo '<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h4>'.YcmModule::t('Image preview').'</h4></div>';
+					echo '<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h4>';
+					echo Yii::t($this->translateCategory,'Image preview').'</h4></div>';
 					echo '<div class="modal-body">'.$image.'</div>';
 					$this->controller->endWidget();
 					echo '<p>';
 					$this->controller->widget('bootstrap.widgets.TbButton', array(
-						'label'=>YcmModule::t('Preview'),
+						'label'=>Yii::t($this->translateCategory,'Preview'),
 						'type'=>'',
 						'htmlOptions'=>array(
 							'data-toggle'=>'modal',
@@ -392,9 +410,9 @@ class YcmModule extends CWebModule
 					));
 					echo '</p>';
 					$html=ob_get_clean();
-					echo $form->fileFieldRow($model,$columnName,array('class'=>'span5','hint'=>$html));
+					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5','hint'=>$html));
 				} else {
-					echo $form->fileFieldRow($model,$columnName,array('class'=>'span5'));
+					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5'));
 				}
 				break;
 
@@ -405,18 +423,31 @@ class YcmModule extends CWebModule
 	}
 
 	/**
+	 * Get attribute file path.
+	 *
+	 * @param string $name Model name
+	 * @param string $attribute Model attribute
+	 * @return string Model attribute file path
+	 */
+	public function getAttributePath($name,$attribute)
+	{
+		return $this->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$attribute;
+	}
+
+	/**
 	 * Get attributes widget.
 	 *
+	 * @param object $model Model
 	 * @param string $attribute Model attribute
-	 * @return null|string
+	 * @return null|object
 	 */
-	public function getAttributeWidget($attribute)
+	public function getAttributeWidget($model,$attribute)
 	{
 		if ($this->attributesWidgets!==null) {
 			if (isset($this->attributesWidgets->$attribute)) {
 				return $this->attributesWidgets->$attribute;
 			} else {
-				$dbType=$this->model->tableSchema->columns[$attribute]->dbType;
+				$dbType=$model->tableSchema->columns[$attribute]->dbType;
 				if ($dbType=='text') {
 					return 'wysiwyg';
 				} else {
@@ -425,8 +456,8 @@ class YcmModule extends CWebModule
 			}
 		}
 
-		if (method_exists($this->model,'attributeWidgets')) {
-			$attributeWidgets=$this->model->attributeWidgets();
+		if (method_exists($model,'attributeWidgets')) {
+			$attributeWidgets=$model->attributeWidgets();
 		} else {
 			return null;
 		}
@@ -440,17 +471,37 @@ class YcmModule extends CWebModule
 				}
 			}
 		}
-		//print_r($data);
+
 		$this->attributesWidgets=(object)$data;
 
-		return $this->getAttributeWidget($attribute);
+		return $this->getAttributeWidget($model,$attribute);
+	}
+
+	/**
+	 * Get an array of attribute choice values.
+	 * The variable or method name needs ​​to be: attributeChoices.
+	 *
+	 * @param object $model Model
+	 * @param string $attribute Model attribute
+	 * @return array
+	 */
+	private function getAttributeChoices($model,$attribute)
+	{
+		$data=array();
+		$choicesName=(string)$attribute.'Choices';
+		if (method_exists($model,$choicesName) && is_array($model->$choicesName())) {
+			$data=$model->$choicesName();
+		} else if (isset($model->$choicesName) && is_array($model->$choicesName)) {
+			$data=$model->$choicesName;
+		}
+		return $data;
 	}
 
 	/**
 	 * Get attributes data.
 	 *
 	 * @param string $attribute Model attribute
-	 * @return null
+	 * @return null|array
 	 */
 	protected function getAttributeOptions($attribute)
 	{
@@ -460,25 +511,6 @@ class YcmModule extends CWebModule
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * Get an array of attribute choice values.
-	 * The variable or method name needs ​​to be: attributeChoices.
-	 *
-	 * @param string $attribute Model attribute
-	 * @return array
-	 */
-	private function getAttributeChoices($attribute)
-	{
-		$data=array();
-		$choicesName=(string)$attribute.'Choices';
-		if (method_exists($this->model, $choicesName) && is_array($this->model->$choicesName())) {
-			$data=$this->model->$choicesName();
-		} else if (isset($this->model->$choicesName) && is_array($this->model->$choicesName)) {
-			$data=$this->model->$choicesName;
-		}
-		return $data;
 	}
 
 	/**

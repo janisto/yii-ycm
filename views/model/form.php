@@ -34,28 +34,41 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 		<div class="form-actions">
 			<?php
 			$buttons = array(
-				array('buttonType'=>'submit','label'=>YcmModule::t('Save'),'type'=>'primary','htmlOptions'=>array('name'=>'_save')),
-				array('buttonType'=>'submit','label'=>YcmModule::t('Save and add another'),'htmlOptions'=>array('name'=>'_addanother')),
-				array('buttonType'=>'submit','label'=>YcmModule::t('Save and continue editing'),'htmlOptions'=>array('name'=>'_continue')),
+				array(
+					'buttonType'=>'submit',
+					'type'=>'primary',
+					'label'=>Yii::t($this->module->translateCategory,'Save'),
+					'htmlOptions'=>array('name'=>'_save')
+				),
+				array(
+					'buttonType'=>'submit',
+					'label'=>Yii::t($this->module->translateCategory,'Save and add another'),
+					'htmlOptions'=>array('name'=>'_addanother')
+				),
+				array(
+					'buttonType'=>'submit',
+					'label'=>Yii::t($this->module->translateCategory,'Save and continue editing'),
+					'htmlOptions'=>array('name'=>'_continue')
+				),
 			);
 			if (!$model->isNewRecord) {
 				array_push($buttons, array(
 					'buttonType'=>'link',
 					'type'=>'danger',
 					'url'=>'#',
-					'label'=>YcmModule::t('Delete'),
+					'label'=>Yii::t($this->module->translateCategory,'Delete'),
 					'htmlOptions'=>array(
 						'submit'=>array(
 							'model/delete',
 							'name'=>get_class($model),
 							'pk'=>$model->primaryKey,
 						),
-						'confirm'=>YcmModule::t('Are you sure you want to delete this item?'),
+						'confirm'=>Yii::t($this->module->translateCategory,'Are you sure you want to delete this item?'),
 					)
 				));
 			}
 			$this->widget('bootstrap.widgets.TbButtonGroup', array(
-				'type'=>'', // '', 'primary', 'info', 'success', 'warning', 'danger' or 'inverse'
+				'type'=>'',
 				'buttons'=>$buttons,
 			));
 			?>

@@ -3,6 +3,8 @@
 class FileBehavior extends CModelBehavior
 {
 	/**
+	 * Get relative file URL.
+	 *
 	 * @param string $attribute
 	 * @return string the file URL
 	 */
@@ -17,6 +19,8 @@ class FileBehavior extends CModelBehavior
 	}
 
 	/**
+	 * Get absolute file URL.
+	 *
 	 * @param string $attribute
 	 * @return string the absolute file URL
 	 */

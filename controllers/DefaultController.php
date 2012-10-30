@@ -8,7 +8,7 @@ class DefaultController extends AdminController
 	public function actionIndex()
 	{
 		$this->render('index',array(
-			'title'=>YcmModule::t('Administration'),
+			'title'=>Yii::t($this->module->translateCategory,'Administration'),
 			'models'=>$this->module->modelsList,
 		));
 	}
@@ -18,8 +18,8 @@ class DefaultController extends AdminController
 	 */
 	public function actionError()
 	{
-		if($error=Yii::app()->errorHandler->error) {
-			if(Yii::app()->request->isAjaxRequest) {
+		if ($error=Yii::app()->errorHandler->error) {
+			if (Yii::app()->request->isAjaxRequest) {
 				echo $error['message'];
 			} else {
 				$this->render('error', $error);
@@ -33,16 +33,13 @@ class DefaultController extends AdminController
 	public function actionLogin()
 	{
 		$model=Yii::createComponent('LoginForm');
-		// collect user input data
-		if(isset($_POST['LoginForm'])) {
+		if (isset($_POST['LoginForm'])) {
 			$model->attributes=$_POST['LoginForm'];
-			// validate user input and redirect to module home page.
-			if($model->validate() && $model->login()) {
+			if ($model->validate() && $model->login()) {
 				$this->redirect(Yii::app()->createUrl($this->module->name));
 			}
 		}
-		// display the login form
-		$this->render('login',array('model'=>$model,'title'=>YcmModule::t('Login')));
+		$this->render('login',array('model'=>$model,'title'=>Yii::t($this->module->translateCategory,'Login')));
 	}
 
 	/**

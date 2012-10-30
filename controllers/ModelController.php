@@ -16,33 +16,50 @@ class ModelController extends AdminController
 	 */
 	public function actionRedactorImageUpload($name,$attr)
 	{
+		$attribute=(string)$attr;
+
 		// Make Yii think this is a AJAX request.
 		$_SERVER['HTTP_X_REQUESTED_WITH']='XMLHttpRequest';
 
 		$file=CUploadedFile::getInstanceByName('file');
-		if (is_object($file) && get_class($file)==='CUploadedFile') {
+		if ($file instanceof CUploadedFile) {
 			if (!in_array(strtolower($file->getExtensionName()),array('gif','png','jpg','jpeg'))) {
-				throw new CHttpException(500,CJSON::encode(array('error'=>'Invalid file extension.')));
+				throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
+					$this->module->translateCategory,
+					'Invalid file extension "{ext}".',
+					array('{ext}'=>$file->getExtensionName())
+				))));
 			}
-			$fileName=hash('sha256',uniqid(rand(),true)).'.'.$file->getExtensionName();
-			$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$attr;
-			if(!is_dir($columnPath)) {
-				if (!mkdir($columnPath,$this->module->permissions,true)) {
-					throw new CHttpException(500,CJSON::encode(array('error'=>'Could not create folder: '.$columnPath.'. Make sure "uploads" folder is writable.')));
+			$fileName=trim(md5($attribute.time().uniqid(rand(),true))).'.'.$file->getExtensionName();
+			$attributePath=$this->module->getAttributePath($name,$attribute);
+			if (!is_dir($attributePath)) {
+				if (!mkdir($attributePath,$this->module->permissions,true)) {
+					throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
+						$this->module->translateCategory,
+						'Could not create folder "{dir}". Make sure "uploads" folder is writable.',
+						array('{dir}'=>$attributePath)
+					))));
 				}
 			}
-			$path=$columnPath.DIRECTORY_SEPARATOR.$fileName;
-			if(file_exists($path) || !$file->saveAs($path)) {
-				throw new CHttpException(500,CJSON::encode(array('error'=>'Could not save file or file exists: '.$path)));
+			$path=$attributePath.DIRECTORY_SEPARATOR.$fileName;
+			if (file_exists($path) || !$file->saveAs($path)) {
+				throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
+					$this->module->translateCategory,
+					'Could not save file or file exists: "{file}".',
+					array('{file}'=>$path)
+				))));
 			}
-			$columnUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attr.'/'.$fileName;
+			$attributeUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attribute.'/'.$fileName;
 			$data = array(
-				'filelink'=>$columnUrl,
+				'filelink'=>$attributeUrl,
 			);
 			echo CJSON::encode($data);
 			exit();
 		} else {
-			throw new CHttpException(500,CJSON::encode(array('error'=>'Could not upload file')));
+			throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
+				$this->module->translateCategory,
+				'Could not upload file.'
+			))));
 		}
 	}
 
@@ -54,15 +71,16 @@ class ModelController extends AdminController
 	 */
 	public function actionRedactorImageList($name,$attr)
 	{
-		$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$attr;
-		$columnUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attr.'/';
-		$files=CFileHelper::findFiles($columnPath,array('fileTypes'=>array('gif','png','jpg','jpeg')));
+		$attribute=(string)$attr;
+		$attributePath=$this->module->getAttributePath($name,$attribute);
+		$attributeUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attribute.'/';
+		$files=CFileHelper::findFiles($attributePath,array('fileTypes'=>array('gif','png','jpg','jpeg')));
 		$data=array();
 		if ($files) {
 			foreach($files as $file) {
 				$data[]=array(
-					'thumb'=>$columnUrl.basename($file),
-					'image'=>$columnUrl.basename($file),
+					'thumb'=>$attributeUrl.basename($file),
+					'image'=>$attributeUrl.basename($file),
 				);
 			}
 		}
@@ -70,45 +88,45 @@ class ModelController extends AdminController
 		exit();
 	}
 
-    /**
-     * List models.
+	/**
+	 * List models.
 	 *
 	 * @param string $name Model name
-     */
-    public function actionList($name)
-    {
-        $model=$this->module->loadModel($name);
+	 */
+	public function actionList($name)
+	{
+		$model=$this->module->loadModel($name);
 
 		// unset default model values
 		$model->unsetAttributes();
 
-        if (isset($_GET[get_class($model)])){
+		if (isset($_GET[get_class($model)])){
 			// Do not set unsafe attributes
 			$params=$_GET[get_class($model)];
-			foreach ($params as $key => $val) {
+			foreach($params as $key => $val) {
 				if (!$model->isAttributeSafe($key)){
 					unset($params[$key]);
 				}
 			}
-            $model->attributes=$params;
+			$model->attributes=$params;
 		}
 
-        $this->breadcrumbs=array(
-        	$this->module->getAdminName($model),
-        );
+		$this->breadcrumbs=array(
+			$this->module->getAdminName($model),
+		);
 
 		$data1=array();
-        if (method_exists($model,'adminSearch')) {
+		if (method_exists($model,'adminSearch')) {
 			$data1=$model->adminSearch();
 		}
 
-        $urlPrefix='Yii::app()->createUrl("'.$this->module->name.'/model/';
-        $data2=array(
-            'id'=>'objects-grid',
+		$urlPrefix='Yii::app()->createUrl("'.$this->module->name.'/model/';
+		$data2=array(
+			'id'=>'objects-grid',
 			'type'=>'striped bordered condensed',
-            'dataProvider'=>$model->search(),
-            'filter'=>$model,
-            'columns'=>array(
+			'dataProvider'=>$model->search(),
+			'filter'=>$model,
+			'columns'=>array(
 				array(
 					'class'=>'bootstrap.widgets.TbButtonColumn',
 					'updateButtonUrl'=>$urlPrefix.'update",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
@@ -118,22 +136,22 @@ class ModelController extends AdminController
 						'style'=>'display:none;',
 					 ),
 				),
-            ),
-        ); 
+			),
+		);
 
-        $data=array_merge_recursive($data1,$data2);
+		$data=array_merge_recursive($data1,$data2);
 
-        if (Yii::app()->request->isAjaxRequest) {
+		if (Yii::app()->request->isAjaxRequest) {
 			$this->widget('bootstrap.widgets.TbGridView',$data);
-            Yii::app()->end();
-        }
+			Yii::app()->end();
+		}
 
-        $this->render('list',array(
-            'title'=>$this->module->getAdminName($model),
-            'model'=>$model, 
-            'data'=>$data,
-        ));
-    }
+		$this->render('list',array(
+			'title'=>$this->module->getAdminName($model),
+			'model'=>$model,
+			'data'=>$data,
+		));
+	}
 
 	/**
 	 * Create model.
@@ -141,60 +159,68 @@ class ModelController extends AdminController
 	 * @param string $name Model name
 	 * @throws CHttpException
 	 */
-    public function actionCreate($name)
-    {
-        $model=$this->module->loadModel($name);
+	public function actionCreate($name)
+	{
+		$model=$this->module->loadModel($name);
 
-        if (Yii::app()->request->isPostRequest && isset($_POST[$name])) {
+		if (Yii::app()->request->isPostRequest && isset($_POST[$name])) {
 			$paths=array();
 			$model->attributes=$_POST[$name];
 
-			foreach ($model->tableSchema->columns as $column) {
-				$columnName=$column->name;
-				$widget=$this->module->getAttributeWidget($columnName);
-				if($widget=='file' || $widget=='image') { // file or image
-					$file=CUploadedFile::getInstance($model,$columnName);
-					if (is_object($file) && get_class($file)==='CUploadedFile') {
-						$fileName=hash('sha256',uniqid(rand(),true)).'.'.$file->getExtensionName();
-						$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$columnName;
-						if(!is_dir($columnPath)) {
-							if (!mkdir($columnPath,$this->module->permissions,true)) {
-								throw new CHttpException(500,'Could not create folder: '.$columnPath.'. Make sure "uploads" folder is writable.');
+			foreach($model->tableSchema->columns as $column) {
+				$attribute=$column->name;
+				$widget=$this->module->getAttributeWidget($model,$attribute);
+				if ($widget=='file' || $widget=='image') {
+					$file=CUploadedFile::getInstance($model,$attribute);
+					if ($file instanceof CUploadedFile) {
+						$fileName=trim(md5($attribute.time().uniqid(rand(),true))).'.'.$file->getExtensionName();
+						$attributePath=$this->module->getAttributePath($name,$attribute);
+						if (!is_dir($attributePath)) {
+							if (!mkdir($attributePath,$this->module->permissions,true)) {
+								throw new CHttpException(500,Yii::t(
+									$this->module->translateCategory,
+									'Could not create folder "{dir}". Make sure "uploads" folder is writable.',
+									array('{dir}'=>$attributePath)
+								));
 							}
 						}
-						$path=$columnPath.DIRECTORY_SEPARATOR.$fileName;
-						if(file_exists($path) || !$file->saveAs($path)) {
-							throw new CHttpException(500,'Could not save file or file exists: '.$path);
+						$path=$attributePath.DIRECTORY_SEPARATOR.$fileName;
+						if (file_exists($path) || !$file->saveAs($path)) {
+							throw new CHttpException(500,Yii::t(
+								$this->module->translateCategory,
+								'Could not save file or file exists: "{file}".',
+								array('{file}'=>$path)
+							));
 						}
 						array_push($paths,$path);
-						$model->$columnName=$fileName;
+						$model->$attribute=$fileName;
 					}
 				}
 			}
 
-            if ($model->save()) {
-                Yii::app()->user->setFlash('success',YcmModule::t('Changes saved.'));
-                $this->redirectUser($name,$model->primaryKey);
-            } else if (count($paths)!=0) {
+			if ($model->save()) {
+				Yii::app()->user->setFlash('success',Yii::t($this->module->translateCategory,'Changes saved.'));
+				$this->redirectUser($name,$model->primaryKey);
+			} else if (count($paths)!=0) {
 				foreach($paths as $path) {
-					if(file_exists($path)) {
+					if (file_exists($path)) {
 						@unlink($path); // Save failed - delete files.
 					}
 				}
 			}
-        }
+		}
 
-        $title=YcmModule::t('Create').' '.$this->module->getSingularName($model);
-        $this->breadcrumbs=array(
+		$title=Yii::t($this->module->translateCategory,'Create').' '.$this->module->getSingularName($model);
+		$this->breadcrumbs=array(
 			$this->module->getAdminName($model)=>$this->createUrl('model/list',array('name'=>$name)),
 			$title,
-        );
+		);
 
-        $this->render('form',array(
-            'title'=>$title,
-            'model'=>$model,            
-        ));
-    }
+		$this->render('form',array(
+			'title'=>$title,
+			'model'=>$model,
+		));
+	}
 	/**
 	 * Update model.
 	 *
@@ -202,24 +228,24 @@ class ModelController extends AdminController
 	 * @param integer $pk Primary key
 	 * @throws CHttpException
 	 */
-    public function actionUpdate($name,$pk)
-    {
-		$model=$this->module->loadModel($name)->findByPk($pk);
+	public function actionUpdate($name,$pk)
+	{
+		$model=$this->module->loadModel($name,$pk);
 
-        if (Yii::app()->request->isPostRequest && isset($_POST[$name])) {
+		if (Yii::app()->request->isPostRequest && isset($_POST[$name])) {
 			$paths=array();
 			$oldPaths=array();
 			$deleteOld=array();
 
 			// store old files to array
-			foreach ($model->tableSchema->columns as $column) {
-				$columnName=$column->name;
-				$widget=$this->module->getAttributeWidget($columnName);
-				if($widget=='file' || $widget=='image') { // file or image
-					$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$columnName;
-					if(isset($model->$columnName)) {
-						$path=$columnPath.DIRECTORY_SEPARATOR.$model->$columnName;
-						$oldPaths[$columnName]=$path;
+			foreach($model->tableSchema->columns as $column) {
+				$attribute=$column->name;
+				$widget=$this->module->getAttributeWidget($model,$attribute);
+				if ($widget=='file' || $widget=='image') {
+					$attributePath=$this->module->getAttributePath($name,$attribute);
+					if (isset($model->$attribute) && !empty($model->$attribute)) {
+						$path=$attributePath.DIRECTORY_SEPARATOR.$model->$attribute;
+						$oldPaths[$attribute]=$path;
 					}
 				}
 			}
@@ -227,118 +253,134 @@ class ModelController extends AdminController
 			// set attributes from POST
 			$model->attributes=$_POST[$name];
 
-			foreach ($model->tableSchema->columns as $column) {
-				$columnName=$column->name;
-				$widget=$this->module->getAttributeWidget($columnName);
-				if($widget=='file' || $widget=='image') { // file or image
-					$file=CUploadedFile::getInstance($model,$columnName);
-					if (is_object($file) && get_class($file)==='CUploadedFile') {
-						$fileName=hash('sha256',uniqid(rand(),true)).'.'.$file->getExtensionName();
-						$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$columnName;
-						if(!is_dir($columnPath)) {
-							if (!mkdir($columnPath,$this->module->permissions,true)) { // Read and write for owner, read for everybody else
-								throw new CHttpException(500,'Could not create folder: '.$columnPath.'. Make sure "uploads" folder is writable.');
+			foreach($model->tableSchema->columns as $column) {
+				$attribute=$column->name;
+				$widget=$this->module->getAttributeWidget($model,$attribute);
+				if ($widget=='file' || $widget=='image') { // file or image
+					$file=CUploadedFile::getInstance($model,$attribute);
+					if ($file instanceof CUploadedFile) {
+						$fileName=trim(md5($attribute.time().uniqid(rand(),true))).'.'.$file->getExtensionName();
+						$attributePath=$this->module->getAttributePath($name,$attribute);
+						if (!is_dir($attributePath)) {
+							if (!mkdir($attributePath,$this->module->permissions,true)) {
+								throw new CHttpException(500,Yii::t(
+									$this->module->translateCategory,
+									'Could not create folder "{dir}". Make sure "uploads" folder is writable.',
+									array('{dir}'=>$attributePath)
+								));
 							}
 						}
-						$path=$columnPath.DIRECTORY_SEPARATOR.$fileName;
-						if(file_exists($path) || !$file->saveAs($path)) {
-							throw new CHttpException(500,'Could not save file or file exists: '.$path);
+						$path=$attributePath.DIRECTORY_SEPARATOR.$fileName;
+						if (file_exists($path) || !$file->saveAs($path)) {
+							throw new CHttpException(500,Yii::t(
+								$this->module->translateCategory,
+								'Could not save file or file exists: "{file}".',
+								array('{file}'=>$path)
+							));
 						}
 						array_push($paths,$path);
-						array_push($deleteOld,$columnName);
-						$model->$columnName=$fileName;
+						array_push($deleteOld,$attribute);
+						$model->$attribute=$fileName;
 					}
 				}
 			}
 
-            if ($model->save()) {
+			if ($model->save()) {
 				if (count($deleteOld)!=0) {
 					foreach($deleteOld as $old) {
-						if(isset($oldPaths[$old]) && file_exists($oldPaths[$old])) {
+						if (isset($oldPaths[$old]) && file_exists($oldPaths[$old])) {
 							@unlink($oldPaths[$old]);
 						}
 					}
 				}
-                Yii::app()->user->setFlash('success',YcmModule::t('Changes saved.'));
-                $this->redirectUser($name,$model->primaryKey);
+				Yii::app()->user->setFlash('success',Yii::t($this->module->translateCategory,'Changes saved.'));
+				$this->redirectUser($name,$model->primaryKey);
 			} else if (count($paths)!=0) {
 				foreach($paths as $path) {
-					if(file_exists($path)) {
+					if (file_exists($path)) {
 						@unlink($path); // Save failed - delete files.
 					}
 				}
 			}
-        }
+		}
 
-        $title=YcmModule::t('Edit').' '.$this->module->getSingularName($model);
-        $this->breadcrumbs=array(
+		$title=Yii::t($this->module->translateCategory,'Edit').' '.$this->module->getSingularName($model);
+		$this->breadcrumbs=array(
 			$this->module->getAdminName($model)=>$this->createUrl('model/list',array('name'=>$name)),
 			$title,
-        );
+		);
 
-        $this->render('form',array(
-            'title'=>YcmModule::t('Edit').' '.$this->module->getSingularName($model),
-            'model'=>$model,            
-        ));
-    }
+		$this->render('form',array(
+			'title'=>Yii::t($this->module->translateCategory,'Edit').' '.$this->module->getSingularName($model),
+			'model'=>$model,
+		));
+	}
+
 	/**
 	 * Delete model.
 	 *
 	 * @param string $name Model name
 	 * @param integer $pk Primary key
+	 * @throws CHttpException
+	 * @return void
 	 */
-    public function actionDelete($name,$pk)
-    {
-		$model=$this->module->loadModel($name)->findByPk($pk);
+	public function actionDelete($name,$pk)
+	{
+		$model=$this->module->loadModel($name,$pk);
 
-        if ($model!==null) {
-            $model->delete();
+		if ($model!==null) {
+			$model->delete();
 
 			// delete files
-			foreach ($model->tableSchema->columns as $column) {
-				$columnName=$column->name;
-				$widget=$this->module->getAttributeWidget($columnName);
-				if($widget=='file' || $widget=='image') { // file or image
-					$columnPath=$this->module->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$columnName;
-					if(isset($model->$columnName)) {
-						$path=$columnPath.DIRECTORY_SEPARATOR.$model->$columnName;
-						if(file_exists($path)) {
-							@unlink($path); // Delete files.
+			foreach($model->tableSchema->columns as $column) {
+				$attribute=$column->name;
+				$widget=$this->module->getAttributeWidget($model,$attribute);
+				if ($widget=='file' || $widget=='image') { // file or image
+					$attributePath=$this->module->getAttributePath($name,$attribute);
+					if (isset($model->$attribute)) {
+						$path=$attributePath.DIRECTORY_SEPARATOR.$model->$attribute;
+						if (file_exists($path)) {
+							@unlink($path); // Delete file.
 						}
 					}
 				}
 			}
-
-            $this->redirect($this->createUrl('model/list',array('name'=>$name)));
-        }
-    }
-
-    /**
-     * Redirect after editing model data.
-     * 
-     * @param string $name Model name
-     * @param integer $pk Primary key
-     */
-    protected function redirectUser($name,$pk)
-    {
-        if (isset($_POST['_save'])) {
-			$this->redirect($this->createUrl('model/list',array('name'=>$name)));
-		} else if (isset($_POST['_addanother'])) {
-            Yii::app()->user->setFlash('success',YcmModule::t('Changes saved. You can add a new entry.'));
-            $this->redirect($this->createUrl('model/create',array('name'=>$name)));
-        } else if (isset($_POST['_continue'])) {
-			$this->redirect($this->createUrl('model/update',array('name'=>$name,'pk'=>$pk)));
+		} else {
+			Yii::app()->user->setFlash('error',Yii::t(
+				$this->module->translateCategory,
+				'Could not delete entry "{name}" with an ID "{pk}".',
+				array('{name}'=>$name,'{pk}'=>$pk)
+			));
 		}
-    }
+		$this->redirect($this->createUrl('model/list',array('name'=>$name)));
+	}
 
-    /**
-     * Download CSV.
+	/**
+	 * Redirect after editing model data.
 	 *
 	 * @param string $name Model name
-     */
-    public function actionCsv($name)
-    {
-        $model=$this->module->loadModel($name);
+	 * @param integer $pk Primary key
+	 */
+	protected function redirectUser($name,$pk)
+	{
+		if (isset($_POST['_save'])) {
+			$this->redirect($this->createUrl('model/list',array('name'=>$name)));
+		} else if (isset($_POST['_addanother'])) {
+			Yii::app()->user->setFlash('success',Yii::t($this->module->translateCategory,'Changes saved. You can add a new entry.'));
+			$this->redirect($this->createUrl('model/create',array('name'=>$name)));
+		} else if (isset($_POST['_continue'])) {
+			$this->redirect($this->createUrl('model/update',array('name'=>$name,'pk'=>$pk)));
+		}
+	}
+
+	/**
+	 * Download CSV.
+	 *
+	 * @param string $name Model name
+	 */
+	public function actionCsv($name)
+	{
+		$model=$this->module->loadModel($name);
 
 		$memoryLimit=5*1024*1024;
 		$delimiter=";";
@@ -348,12 +390,12 @@ class ModelController extends AdminController
 
 		foreach($model->tableSchema->columns as $column) {
 			// skip primary key?
-            //if ($column->isPrimaryKey===true) continue;
+			//if ($column->isPrimaryKey===true) continue;
 
 			// no new lines in CSV format.
 			$header[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($model->getAttributeLabel($column->name)));
 
-			if($select!='') {
+			if ($select!='') {
 				$select.=', ';
 			}
 			$select.=Yii::app()->db->quoteColumnName($column->name);
@@ -371,7 +413,7 @@ class ModelController extends AdminController
 		foreach($provider as $row) {
 			$retVal=array();
 			foreach($row as $item) {
-				if($item==0 || !empty($item)) {
+				if ($item==0 || !empty($item)) {
 					// no new lines in CSV format.
 					$retVal[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($item));
 				} else {
@@ -384,20 +426,18 @@ class ModelController extends AdminController
 		rewind($fp);
 		$content=stream_get_contents($fp);
 		$filename=$name.'_'.date('Y-m-d').'.csv';
-
 		Yii::app()->getRequest()->sendFile($filename,$content,"text/csv",false);
-
 		exit;
 	}
 
-    /**
-     * Download Microsoft formatted CSV.
+	/**
+	 * Download Microsoft formatted CSV.
 	 *
 	 * @param string $name Model name
-     */
-    public function actionMsCsv($name)
-    {
-        $model=$this->module->loadModel($name);
+	 */
+	public function actionMsCsv($name)
+	{
+		$model=$this->module->loadModel($name);
 
 		$memoryLimit=5*1024*1024;
 		$delimiter="\t"; // UTF-16LE needs "\t"
@@ -407,12 +447,12 @@ class ModelController extends AdminController
 
 		foreach($model->tableSchema->columns as $column) {
 			// skip primary key?
-            //if($column->isPrimaryKey===true) continue;
+			//if($column->isPrimaryKey===true) continue;
 
 			// no new lines in CSV format.
 			$header[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($model->getAttributeLabel($column->name)));
 
-			if($select!='') {
+			if ($select!='') {
 				$select.=', ';
 			}
 			$select.=Yii::app()->db->quoteColumnName($column->name);
@@ -430,7 +470,7 @@ class ModelController extends AdminController
 		foreach($provider as $row) {
 			$retVal=array();
 			foreach($row as $item) {
-				if($item==0 || !empty($item)) {
+				if ($item==0 || !empty($item)) {
 					// no new lines in CSV format.
 					$retVal[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($item));
 				} else {
@@ -446,24 +486,23 @@ class ModelController extends AdminController
 		$filename=$name.'_'.date('Y-m-d').'.csv';
 		header("Content-Disposition: attachment; filename=\"$filename\"");
 		header("Content-Type: application/vnd.ms-excel; charset=UTF-16LE");
-		if(ini_get("output_handler")=='') {
+		if (ini_get("output_handler")=='') {
 			header("Content-Length: ".(function_exists('mb_strlen') ? mb_strlen($content,'8bit') : strlen($content)));
 		}
 		header("Content-Transfer-Encoding: binary");
 		header("Cache-Control: max-age=0");
 		print chr(255).chr(254).$content;
-
 		exit;
 	}
 
-    /**
-     * Download Excel.
+	/**
+	 * Download Excel.
 	 *
 	 * @param string $name Model name
-     */
-    public function actionExcel($name)
-    {
-        $model=$this->module->loadModel($name);
+	 */
+	public function actionExcel($name)
+	{
+		$model=$this->module->loadModel($name);
 
 		$memoryLimit=5*1024*1024;
 		$begin='<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><title>'.$name;
@@ -474,11 +513,11 @@ class ModelController extends AdminController
 
 		foreach($model->tableSchema->columns as $column) {
 			// skip primary key?
-            //if($column->isPrimaryKey===true) continue;
+			//if($column->isPrimaryKey===true) continue;
 
 			$header.='<th align="left" style="color: #ef4a2c;">'.(string)trim($model->getAttributeLabel($column->name)).'</th>';
 
-			if($select!='') {
+			if ($select!='') {
 				$select.=', ';
 			}
 			$select.=Yii::app()->db->quoteColumnName($column->name);
@@ -498,7 +537,7 @@ class ModelController extends AdminController
 		foreach($provider as $row) {
 			$retVal='<tr>';
 			foreach($row as $item) {
-				if($item==0 || !empty($item)) {
+				if ($item==0 || !empty($item)) {
 					$retVal.='<td>'.(string)trim($item).'</td>';
 				} else {
 					$retVal.='<td>&nbsp;</td>';
@@ -514,13 +553,12 @@ class ModelController extends AdminController
 		$filename=$name.'_'.date('Y-m-d').'.xls';
 		header("Content-Disposition: attachment; filename=\"$filename\"");
 		header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
-		if(ini_get("output_handler")=='') {
+		if (ini_get("output_handler")=='') {
 			header("Content-Length: ".(function_exists('mb_strlen') ? mb_strlen($content,'8bit') : strlen($content)));
 		}
 		header("Content-Transfer-Encoding: binary");
 		header("Cache-Control: max-age=0");
 		print $content;
-
 		exit;
 	}
 }

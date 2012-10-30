@@ -1,22 +1,39 @@
 <?php
 
+/**
+ * UserIdentity represents the data needed to identity a user.
+ * It contains the authentication method that checks if the provided
+ * data can identity the user.
+ */
 class UserIdentity extends CUserIdentity
 {
 	/**
 	 * Authenticates a user.
-	 * @throws CException
+	 *
+	 * @throws CHttpException
 	 * @return boolean whether authentication succeeds.
 	 */
 	public function authenticate()
 	{
-		$password=Yii::app()->getModule('ycm')->password;
-		if ($password===null) {
-			throw new CException('Please configure the "password" property of the module.');
-		} else if ($password===false || $password===$this->password) {
-			$this->errorCode=self::ERROR_NONE;
+		$user=Yii::app()->getModule('ycm')->username;
+		$pass=Yii::app()->getModule('ycm')->password;
+		$users=array(
+			$user=>$pass,
+		);
+
+		if ($user===null || $pass===null) {
+			throw new CHttpException(500,Yii::t(
+				Yii::app()->getModule('ycm')->translateCategory,
+				'Please configure "username" and "password" properties of the module in configuration file.')
+			);
+		} else if (!isset($users[$this->username])) {
+			$this->errorCode=self::ERROR_USERNAME_INVALID;
+		} else if ($users[$this->username]!==$this->password) {
+			$this->errorCode=self::ERROR_PASSWORD_INVALID;
 		} else {
-			$this->errorCode=self::ERROR_UNKNOWN_IDENTITY;
+			$this->errorCode=self::ERROR_NONE;
 		}
+
 		return !$this->errorCode;
 	}
 }

@@ -12,7 +12,11 @@ $this->pageTitle=$title;
 	$this->widget('bootstrap.widgets.TbButtonGroup', array(
 		'type'=>'',
 		'buttons'=>array(
-			array('label'=>YcmModule::t('Create').' '.$this->module->getSingularName($model),'url'=>$this->createUrl('model/create',array('name'=>get_class($model))),'type'=>'primary'),
+			array(
+				'type'=>'primary',
+				'label'=>Yii::t($this->module->translateCategory,'Create').' '.$this->module->getSingularName($model),
+				'url'=>$this->createUrl('model/create',array('name'=>get_class($model))),
+			),
 		),
 	));
 	?>
