@@ -23,7 +23,7 @@ class YcmModule extends CWebModule
 	public $uploadPath;
 	public $uploadUrl;
 	public $uploadCreate=false;
-	public $redactorUpload=true;
+	public $redactorUpload=false;
 	public $permissions=0774;
 	public $translateCategory='YcmModule.ycm';
 
