@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="yii-ycm : YCM - Yii Content Management module" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>yii-ycm</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/janisto/yii-ycm">View on GitHub</a>
+
+          <h1 id="project_title">yii-ycm</h1>
+          <h2 id="project_tagline">YCM - Yii Content Management module</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/janisto/yii-ycm/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/janisto/yii-ycm/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>Requirements</h2>
+
+<ul>
+<li>Yii 1.1.10 or above (Requires jQuery 1.7.1)</li>
+</ul><h2>Installation</h2>
+
+<ul>
+<li>Download yii-ycm or clone the files to <code>protected/modules/ycm</code>
+</li>
+<li>Edit Yii main configuration file <code>protected/config/main.php</code>. Enable module, set username, password and models you want to manage.</li>
+</ul><pre><code>    'modules'=&gt;array(
+        ...
+        'ycm'=&gt;array(
+            'username'=&gt;'YOUR USERNAME',
+            'password'=&gt;'YOUR PASSWORD',
+            'registerModels'=&gt;array(
+                //'application.models.Blog', // one model
+                'application.models.*', // all models in folder
+            ),
+            'uploadCreate'=&gt;true, // create upload folder automatically
+            'redactorUpload'=&gt;true, // enable Redactor image upload
+        ),
+        ...
+    ),
+</code></pre>
+
+<h2>Usage</h2>
+
+<h2>License</h2>
+
+<p>yii-ycm is free and unencumbered <a href="http://unlicense.org/">public domain</a> software.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">yii-ycm maintained by <a href="https://github.com/janisto">janisto</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-36032651-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
