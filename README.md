@@ -12,7 +12,7 @@ Installation
 ------------------
 
 - Download yii-ycm or clone the files to `protected/modules/ycm`
-- Edit yii main configuration file `protected/config/main.php`. Enable module, set username, password and models you want to manage.
+- Edit Yii main configuration file `protected/config/main.php`. Enable module, set username, password and models you want to manage.
 
 ~~~
 	'modules'=>array(
