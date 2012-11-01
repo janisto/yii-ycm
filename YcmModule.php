@@ -349,7 +349,7 @@ class YcmModule extends CWebModule
 
 			case 'dropDown':
 				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),array(
-					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$attribute,
+					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$model->getAttributeLabel($attribute),
 					'class'=>'span5')
 				);
 				break;
