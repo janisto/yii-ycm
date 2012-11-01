@@ -57,7 +57,1070 @@
     ),
 </code></pre>
 
-<h2>Usage</h2>
+<h2>Examples</h2>
+
+<h3>Basic</h3>
+
+<p>Create table:</p>
+
+<pre><code>CREATE TABLE `sample`
+(
+  `id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `field0` TINYINT(4) DEFAULT '0',
+  `field1` TINYINT(4) DEFAULT '0',
+  `field2` TINYINT(4) DEFAULT '0',
+  `field3` TINYINT(4) DEFAULT '0',
+  `field4` VARCHAR(128) NOT NULL,
+  `field5` VARCHAR(128) NOT NULL,
+  `field6` TEXT NOT NULL,
+  `field7` TEXT NOT NULL,
+  `field8` VARCHAR(64) DEFAULT NULL,
+  `field9` VARCHAR(64) DEFAULT NULL,
+  `field10` DATE DEFAULT NULL,
+  `field11` TIME DEFAULT NULL,
+  `field12` DATETIME DEFAULT NULL,
+  `field13` VARCHAR(64) DEFAULT NULL,
+  `field14` TINYINT(4) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+</code></pre>
+
+<p>Create Sample model:</p>
+
+<pre><code>&lt;?php
+
+/**
+ * This is the model class for table "sample".
+ *
+ * The followings are the available columns in table 'sample':
+ * @property integer $id
+ * @property integer $field0
+ * @property integer $field1
+ * @property integer $field2
+ * @property integer $field3
+ * @property string $field4
+ * @property string $field5
+ * @property string $field6
+ * @property string $field7
+ * @property string $field8
+ * @property string $field9
+ * @property string $field10
+ * @property string $field11
+ * @property string $field12
+ * @property string $field13
+ * @property integer $field14
+ */
+class Sample extends CActiveRecord
+{
+    /**
+     * Admin variables (ycm module)
+     */
+    public $adminNames=array('Samples','sample','samples'); // admin interface, singular, plural
+    public $downloadExcel=true; // Download Excel
+    public $downloadMsCsv=true; // Download MS CSV
+    public $downloadCsv=true; // Download CSV
+
+    /**
+     * Behaviors.
+     * @return array
+     */
+    function behaviors() {
+        return array(
+            'file' =&gt; array(
+                'class'=&gt;'application.modules.ycm.behaviors.FileBehavior',
+            ),
+        );
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return Sample the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'sample';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('field4, field5, field6, field7', 'required'),
+            array('field0, field1, field2, field3, field14', 'numerical', 'integerOnly'=&gt;true),
+            array('field4, field5', 'length', 'max'=&gt;128),
+            array('field8, field9, field13', 'length', 'max'=&gt;64),
+            array('field8, field9', 'unsafe'),
+            array('field8', 'file', 'on'=&gt;'insert', 'allowEmpty'=&gt;true, 'types'=&gt;'jpg,jpeg,gif,png', 'maxSize'=&gt;1024*1024*6),
+            array('field8', 'file', 'on'=&gt;'update', 'allowEmpty'=&gt;true, 'types'=&gt;'jpg,jpeg,gif,png', 'maxSize'=&gt;1024*1024*6),
+            array('field9', 'file', 'on'=&gt;'insert', 'allowEmpty'=&gt;true, 'types'=&gt;'jpg,jpeg,gif,png,gz,tar,zip,pdf,doc,docx,xls,xlsx,ppt,pptx,pps,ppsx', 'maxSize'=&gt;1024*1024*6),
+            array('field9', 'file', 'on'=&gt;'update', 'allowEmpty'=&gt;true, 'types'=&gt;'jpg,jpeg,gif,png,gz,tar,zip,pdf,doc,docx,xls,xlsx,ppt,pptx,pps,ppsx', 'maxSize'=&gt;1024*1024*6),
+            array('field10, field11, field12', 'safe'),
+
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, field0, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13, field14', 'safe', 'on'=&gt;'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=&gt;label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' =&gt; 'ID',
+            'field0' =&gt; 'Field 0',
+            'field1' =&gt; 'Field 1',
+            'field2' =&gt; 'Field 2',
+            'field3' =&gt; 'Field 3',
+            'field4' =&gt; 'Field 4',
+            'field5' =&gt; 'Field 5',
+            'field6' =&gt; 'Field 6',
+            'field7' =&gt; 'Field 7',
+            'field8' =&gt; 'Field 8',
+            'field9' =&gt; 'Field 9',
+            'field10' =&gt; 'Field 10',
+            'field11' =&gt; 'Field 11',
+            'field12' =&gt; 'Field 12',
+            'field13' =&gt; 'Field 13',
+            'field14' =&gt; 'Field 14',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria-&gt;compare('id',$this-&gt;id);
+        $criteria-&gt;compare('field0',$this-&gt;field0);
+        $criteria-&gt;compare('field1',$this-&gt;field1);
+        $criteria-&gt;compare('field2',$this-&gt;field2);
+        $criteria-&gt;compare('field3',$this-&gt;field3);
+        $criteria-&gt;compare('field4',$this-&gt;field4,true);
+        $criteria-&gt;compare('field5',$this-&gt;field5,true);
+        $criteria-&gt;compare('field6',$this-&gt;field6,true);
+        $criteria-&gt;compare('field7',$this-&gt;field7,true);
+        $criteria-&gt;compare('field8',$this-&gt;field8,true);
+        $criteria-&gt;compare('field9',$this-&gt;field9,true);
+        $criteria-&gt;compare('field10',$this-&gt;field10,true);
+        $criteria-&gt;compare('field11',$this-&gt;field11,true);
+        $criteria-&gt;compare('field12',$this-&gt;field12,true);
+        $criteria-&gt;compare('field13',$this-&gt;field13,true);
+        $criteria-&gt;compare('field14',$this-&gt;field14);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=&gt;$criteria,
+        ));
+    }
+
+    /**
+     * Config for attribute widgets (ycm module)
+     *
+     * @return array
+     */
+    public function attributeWidgets()
+    {
+        return array(
+            array('field0','chosen'),
+            array('field1','chosenMultiple'),
+            array('field2','dropDown'),
+            array('field3','radioButton'),
+            array('field4','textField'),
+            array('field5','password'),
+            array('field6','textArea'),
+            array('field7','wysiwyg'),
+            array('field8','image'),
+            array('field9','file'),
+            array('field10','date'),
+            array('field11','time'),
+            array('field12','datetime'),
+            array('field13','disabled'),
+            array('field14','boolean'),
+        );
+    }
+
+    /**
+     * Select choices for field0 (ycm module)
+     *
+     * @return array
+     */
+    public function field0Choices()
+    {
+        return array(
+            '1'=&gt;'First',
+            '2'=&gt;'Second',
+            '3'=&gt;'Third',
+        );
+    }
+
+    /**
+     * Select choices for field1 (ycm module)
+     *
+     * @return array
+     */
+    public function field1Choices()
+    {
+        return array(
+            '1'=&gt;'First',
+            '2'=&gt;'Second',
+            '3'=&gt;'Third',
+        );
+    }
+
+    /**
+     * Select choices for field2 (ycm module)
+     *
+     * @return array
+     */
+    public function field2Choices()
+    {
+        return array(
+            '1'=&gt;'First',
+            '2'=&gt;'Second',
+            '3'=&gt;'Third',
+        );
+    }
+
+    /**
+     * Select choices for field3 (ycm module)
+     *
+     * @return array
+     */
+    public function field3Choices()
+    {
+        return array(
+            '1'=&gt;'First',
+            '2'=&gt;'Second',
+            '3'=&gt;'Third',
+        );
+    }
+
+    /**
+     * Config for TbGridView class (ycm module)
+     *
+     * @return array
+     */
+    public function adminSearch()
+    {
+        return array(
+            'columns'=&gt;array(
+                'field4',
+                'id',
+                array(
+                    'name'=&gt;'field0',
+                    'value'=&gt;'$data-&gt;field0',
+                    'filter'=&gt;Sample::model()-&gt;field0Choices(),
+                ),
+                array(
+                    'name'=&gt;'field3',
+                    'value'=&gt;'$data-&gt;field3',
+                    'filter'=&gt;Sample::model()-&gt;field3Choices(),
+                ),
+                array(
+                    'name'=&gt;'field14',
+                    'value'=&gt;'$data-&gt;field14==1 ? CHtml::encode("Yes") : CHtml::encode("No")',
+                    'filter'=&gt;array(1=&gt;'Yes',0=&gt;'No'),
+                ),
+                array(
+                    'name' =&gt; 'field12',
+                    'value' =&gt; 'date("d.m.Y H:i:s",strtotime($data-&gt;field12))',
+                ),
+            ),
+        );
+    }
+}
+</code></pre>
+
+<p>Go to: <a href="http://your.domain.com/ycm">http://your.domain.com/ycm</a></p>
+
+<h3>One to many relationship (HAS_MANY)</h3>
+
+<p>Create tables:</p>
+
+<pre><code>CREATE TABLE `department`
+(
+  `id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL,
+  `description` TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `blog`
+(
+  `id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `department_id` INTEGER DEFAULT NULL,
+  `title` VARCHAR(128) NOT NULL,
+  `content` TEXT NOT NULL,
+  CONSTRAINT `FK_department` FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+</code></pre>
+
+<p>Create Department model:</p>
+
+<pre><code>&lt;?php
+
+/**
+ * This is the model class for table "department".
+ *
+ * The followings are the available columns in table 'department':
+ * @property integer $id
+ * @property string $name
+ * @property string $description
+ *
+ * The followings are the available model relations:
+ * @property Blog[] $blogs
+ */
+class Department extends CActiveRecord
+{
+    /**
+     * Admin variables (ycm module)
+     */
+    public $adminNames=array('Blog departments','blog department','blog departments'); // admin interface, singular, plural
+
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return Department the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'department';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('name', 'required'),
+            array('name', 'length', 'max'=&gt;128),
+            array('description', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, name, description', 'safe', 'on'=&gt;'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'blogs' =&gt; array(self::HAS_MANY, 'Blog', 'department_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=&gt;label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' =&gt; 'ID',
+            'name' =&gt; 'Name',
+            'description' =&gt; 'Description',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria-&gt;compare('id',$this-&gt;id);
+        $criteria-&gt;compare('name',$this-&gt;name,true);
+        $criteria-&gt;compare('description',$this-&gt;description,true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=&gt;$criteria,
+        ));
+    }
+
+    /**
+     * Config for attribute widgets (ycm module)
+     *
+     * @return array
+     */
+    public function attributeWidgets()
+    {
+        return array(
+            array('description','wysiwyg'),
+        );
+    }
+
+    /**
+     * Config for TbGridView class (ycm module)
+     *
+     * @return array
+     */
+    public function adminSearch()
+    {
+        return array(
+            'columns'=&gt;array(
+                'id',
+                'name',
+            ),
+        );
+    }
+}
+</code></pre>
+
+<p>Create Blog model:</p>
+
+<pre><code>&lt;?php
+
+/**
+ * This is the model class for table "blog".
+ *
+ * The followings are the available columns in table 'blog':
+ * @property integer $id
+ * @property integer $department_id
+ * @property string $title
+ * @property string $content
+ *
+ * The followings are the available model relations:
+ * @property Department $department
+ */
+class Blog extends CActiveRecord
+{
+    /**
+     * Admin variables (ycm module)
+     */
+    public $adminNames=array('Blog posts','blog post','blog posts'); // admin interface, singular, plural
+    public $downloadExcel=true; // Download Excel
+    public $downloadMsCsv=true; // Download MS CSV
+    public $downloadCsv=true; // Download CSV
+
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return Blog the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'blog';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('title, content', 'required'),
+            array('department_id', 'numerical', 'integerOnly'=&gt;true),
+            array('title', 'length', 'max'=&gt;128),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, department_id, title, content', 'safe', 'on'=&gt;'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'department' =&gt; array(self::BELONGS_TO, 'Department', 'department_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=&gt;label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' =&gt; 'ID',
+            'department_id' =&gt; 'Department',
+            'title' =&gt; 'Title',
+            'content' =&gt; 'Content',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria-&gt;compare('id',$this-&gt;id);
+        $criteria-&gt;compare('department_id',$this-&gt;department_id);
+        $criteria-&gt;compare('title',$this-&gt;title,true);
+        $criteria-&gt;compare('content',$this-&gt;content,true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=&gt;$criteria,
+            'pagination'=&gt;array(
+                'pageSize'=&gt;20,
+            ),
+        ));
+    }
+
+    /**
+     * Config for attribute widgets (ycm module)
+     *
+     * @return array
+     */
+    public function attributeWidgets()
+    {
+        return array(
+            array('department_id','chosen'),
+            array('content','wysiwyg'),
+        );
+    }
+
+    /**
+     * Select choices for department_id (ycm module)
+     *
+     * @return array
+     */
+    public function department_idChoices()
+    {
+        return CHtml::listData(Department::model()-&gt;findAll(), 'id', 'name');
+    }
+
+    /**
+     * Config for TbGridView class (ycm module)
+     *
+     * @return array
+     */
+    public function adminSearch()
+    {
+        return array(
+            'columns'=&gt;array(
+                'id',
+                'title',
+                array(
+                    'name'=&gt;'department_id',
+                    'value'=&gt;'($data-&gt;department) ? $data-&gt;department-&gt;name : "No department"',
+                    'filter'=&gt;$this-&gt;department_idChoices(),
+                ),
+            ),
+        );
+    }
+}
+</code></pre>
+
+<p>Go to: <a href="http://your.domain.com/ycm">http://your.domain.com/ycm</a></p>
+
+<h3>Many to many relationship (MANY_MANY)</h3>
+
+<p>Create tables:</p>
+
+<pre><code>CREATE TABLE `post`
+(
+  `id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `title` VARCHAR(128) NOT NULL,
+  `content` TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `category`
+(
+  `id` INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL,
+  `description` TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `post_category`
+(
+  `post_id` INTEGER NOT NULL,
+  `category_id` INTEGER NOT NULL,
+  PRIMARY KEY (`post_id`,`category_id`),
+  CONSTRAINT `FK_post_category` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `FK_category_post` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+</code></pre>
+
+<p>Create Post model:</p>
+
+<pre><code>&lt;?php
+
+/**
+ * This is the model class for table "post".
+ *
+ * The followings are the available columns in table 'post':
+ * @property integer $id
+ * @property string $title
+ * @property string $content
+ *
+ * The followings are the available model relations:
+ * @property Category[] $categories
+ * @property PostCategory[] $category
+ */
+class Post extends CActiveRecord
+{
+    /**
+     * Admin variables (ycm module)
+     */
+    public $adminNames=array('Posts','post','posts'); // admin interface, singular, plural
+
+    /**
+     * Categories id array
+     *
+     * @var array
+     */
+    public $assignedCategories;
+
+    /**
+     * Populate categories id array after find.
+     */
+    public function afterFind() {
+        if (!$this-&gt;isNewRecord) {
+            $this-&gt;assignedCategories=CHtml::listData($this-&gt;category,'category_id','category_id');
+        }
+    }
+
+    /**
+     * Update categories after save.
+     */
+    public function afterSave() {
+        if (!$this-&gt;isNewRecord) {
+            // delete all categories from Post
+            $criteria=new CDbCriteria;
+            $criteria-&gt;condition='post_id=:post_id';
+            $criteria-&gt;params=array(':post_id'=&gt;$this-&gt;id);
+            PostCategory::model()-&gt;deleteAll($criteria);
+        }
+        // add selected categories to Post
+        if(!empty($this-&gt;assignedCategories)) {
+            foreach($this-&gt;assignedCategories as $category_id) {
+                $postCategory=new PostCategory;
+                $postCategory-&gt;post_id=$this-&gt;id;
+                $postCategory-&gt;category_id=$category_id;
+                $postCategory-&gt;save(false);
+            }
+        }
+    }
+
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return Post the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'post';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('title, content', 'required'),
+            array('title', 'length', 'max'=&gt;128),
+            array('assignedCategories', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, title, content, assignedCategories', 'safe', 'on'=&gt;'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'categories'=&gt;array(self::MANY_MANY,'Category','post_category(post_id,category_id)'),
+            'category'=&gt;array(self::HAS_MANY,'PostCategory','post_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=&gt;label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' =&gt; 'ID',
+            'assignedCategories' =&gt; 'Categories',
+            'title' =&gt; 'Title',
+            'content' =&gt; 'Content',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria-&gt;compare('id',$this-&gt;id);
+        $criteria-&gt;compare('title',$this-&gt;title,true);
+        $criteria-&gt;compare('content',$this-&gt;content,true);
+
+        $criteria-&gt;compare('category_id',$this-&gt;assignedCategories);
+        $criteria-&gt;with=array('category');
+        $criteria-&gt;together=true;
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=&gt;$criteria,
+            'pagination'=&gt;array(
+                'pageSize'=&gt;20,
+            ),
+        ));
+    }
+
+    /**
+     * @return string Category names separated with a comma.
+     */
+    public function getRelatedCategoryNames()
+    {
+        $out=CHtml::listData($this-&gt;categories,'id','name');
+        return implode(', ', $out);
+    }
+
+    /**
+     * Config for attribute widgets (ycm module)
+     *
+     * @return array
+     */
+    public function attributeWidgets()
+    {
+        return array(
+            array('assignedCategories','chosenMultiple'),
+            array('content','wysiwyg'),
+        );
+    }
+
+    /**
+     * Select choices for assignedCategories (ycm module)
+     *
+     * @return array
+     */
+    public function assignedCategoriesChoices()
+    {
+        return CHtml::listData(Category::model()-&gt;findAll(array('order'=&gt;'name ASC')), 'id', 'name');
+    }
+
+    /**
+     * Config for TbGridView class (ycm module)
+     *
+     * @return array
+     */
+    public function adminSearch()
+    {
+        return array(
+            'columns'=&gt;array(
+                'id',
+                'title',
+                array(
+                    'name'=&gt;'assignedCategories',
+                    'value'=&gt;'$data-&gt;relatedCategoryNames',
+                    'filter'=&gt;$this-&gt;assignedCategoriesChoices(),
+                    'type'=&gt;'html',
+                ),
+            ),
+        );
+    }
+}
+</code></pre>
+
+<p>Create Category model:</p>
+
+<pre><code>&lt;?php
+
+/**
+ * This is the model class for table "category".
+ *
+ * The followings are the available columns in table 'category':
+ * @property integer $id
+ * @property string $name
+ * @property string $description
+ *
+ * The followings are the available model relations:
+ * @property Post[] $posts
+ * @property Post[] $postCount
+ */
+class Category extends CActiveRecord
+{
+    /**
+     * Admin variables (ycm module)
+     */
+    public $adminNames=array('Post categories','post category','post categories'); // admin interface, singular, plural
+
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return Category the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'category';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('name', 'required'),
+            array('name', 'length', 'max'=&gt;128),
+            array('description', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, name, description', 'safe', 'on'=&gt;'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'posts' =&gt; array(self::MANY_MANY, 'Post', 'post_category(category_id, post_id)'),
+            'postCount' =&gt; array(self::STAT, 'Post', 'post_category(category_id, post_id)'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=&gt;label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' =&gt; 'ID',
+            'name' =&gt; 'Name',
+            'description' =&gt; 'Description',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria-&gt;compare('id',$this-&gt;id);
+        $criteria-&gt;compare('name',$this-&gt;name,true);
+        $criteria-&gt;compare('description',$this-&gt;description,true);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=&gt;$criteria,
+            'pagination'=&gt;array(
+                'pageSize'=&gt;20,
+            ),
+        ));
+    }
+
+    /**
+     * Config for attribute widgets (ycm module)
+     *
+     * @return array
+     */
+    public function attributeWidgets()
+    {
+        return array(
+            array('description','wysiwyg'),
+        );
+    }
+
+    /**
+     * Config for TbGridView class (ycm module)
+     *
+     * @return array
+     */
+    public function adminSearch()
+    {
+        return array(
+            'columns'=&gt;array(
+                'id',
+                'name',
+            ),
+        );
+    }
+}
+</code></pre>
+
+<p>Create PostCategory model:</p>
+
+<pre><code>&lt;?php
+
+/**
+ * This is the model class for table "post_category".
+ *
+ * The followings are the available columns in table 'post_category':
+ * @property integer $post_id
+ * @property integer $category_id
+ */
+class PostCategory extends CActiveRecord
+{
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return PostCategory the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'post_category';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('post_id, category_id', 'required'),
+            array('post_id, category_id', 'numerical', 'integerOnly'=&gt;true),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('post_id, category_id', 'safe', 'on'=&gt;'search'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=&gt;label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'post_id' =&gt; 'Post',
+            'category_id' =&gt; 'Category',
+        );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria-&gt;compare('post_id',$this-&gt;post_id);
+        $criteria-&gt;compare('category_id',$this-&gt;category_id);
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=&gt;$criteria,
+            'pagination'=&gt;array(
+                'pageSize'=&gt;20,
+            ),
+        ));
+    }
+}
+</code></pre>
+
+<p>Go to: <a href="http://your.domain.com/ycm">http://your.domain.com/ycm</a></p>
 
 <h2>License</h2>
 
