@@ -3,6 +3,9 @@ yii-ycm
 
 YCM - Yii Content Management module
 
+- [Documentation](http://janisto.github.com/yii-ycm/)
+- [Examples](http://janisto.github.com/yii-ycm/)
+
 Requirements
 ------------------
 
@@ -31,14 +34,12 @@ Installation
 	),
 ~~~
 
-
-Usage
-------------------
-
-
 Changelog
 ------------------
 
+### v0.2
+
+- Initial version.
 
 License
 ------------------
