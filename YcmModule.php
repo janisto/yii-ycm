@@ -323,7 +323,7 @@ class YcmModule extends CWebModule
 			case 'chosen':
 				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
-					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$attribute,
+					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$model->getAttributeLabel($attribute),
 					'class'=>'span5 chzn-select'
 				);
 				if ($attributeOptions) {
@@ -336,7 +336,7 @@ class YcmModule extends CWebModule
 			case 'chosenMultiple':
 				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
-					'data-placeholder'=>Yii::t($this->translateCategory,'Choose').' '.$attribute,
+					'data-placeholder'=>Yii::t($this->translateCategory,'Choose').' '.$model->getAttributeLabel($attribute),
 					'multiple'=>'multiple',
 					'class'=>'span5 chzn-select'
 				);
