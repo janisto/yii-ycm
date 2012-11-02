@@ -11,7 +11,7 @@ $cs->registerCssFile($baseUrl.'/css/styles.css');
 <head>
 	<meta charset="utf-8">
 	<meta name="robots" content="NONE,NOARCHIVE" />
-	<title><?php print Yii::t($this->module->translateCategory,'Administration') ?></title>
+	<title><?php print Yii::t('YcmModule.ycm','Administration') ?></title>
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
@@ -20,7 +20,7 @@ $cs->registerCssFile($baseUrl.'/css/styles.css');
 <?php
 $this->widget('bootstrap.widgets.TbNavbar', array(
 	'type'=>'inverse', // null or 'inverse'
-	'brand'=>Yii::t($this->module->translateCategory,'Administration'),
+	'brand'=>Yii::t('YcmModule.ycm','Administration'),
 	'brandUrl'=>Yii::app()->createUrl('/'.$this->module->name),
 	'collapse'=>true, // requires bootstrap-responsive.css
 	'items'=>array(
@@ -29,12 +29,12 @@ $this->widget('bootstrap.widgets.TbNavbar', array(
 			'htmlOptions'=>array('class'=>'pull-right'),
 			'items'=>array(
 				array(
-					'label'=>Yii::t($this->module->translateCategory,'Login'),
+					'label'=>Yii::t('YcmModule.ycm','Login'),
 					'url'=>array('/'.$this->module->name.'/default/login'),
 					'visible'=>Yii::app()->user->isGuest,
 				),
 				array(
-					'label'=>Yii::t($this->module->translateCategory,'Logout'),
+					'label'=>Yii::t('YcmModule.ycm','Logout'),
 					'url'=>array('/'.$this->module->name.'/default/logout'),
 					'visible'=>!Yii::app()->user->isGuest,
 				),
@@ -49,7 +49,7 @@ $this->widget('bootstrap.widgets.TbNavbar', array(
 	<?php $this->widget('bootstrap.widgets.TbBreadcrumbs',array(
 		'links'=>$this->breadcrumbs,
 		'separator'=>'/',
-		'homeLink'=>CHtml::link(Yii::t($this->module->translateCategory,'Home'),Yii::app()->createUrl('/'.$this->module->name)),
+		'homeLink'=>CHtml::link(Yii::t('YcmModule.ycm','Home'),Yii::app()->createUrl('/'.$this->module->name)),
 	)); ?>
 </div>
 <?php endif?>

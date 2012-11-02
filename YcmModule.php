@@ -25,7 +25,6 @@ class YcmModule extends CWebModule
 	public $uploadCreate=false;
 	public $redactorUpload=false;
 	public $permissions=0774;
-	public $translateCategory='YcmModule.ycm';
 
 	/**
 	 * Load model.
@@ -44,7 +43,7 @@ class YcmModule extends CWebModule
 			$model=$name::model()->findByPk((int)$pk);
 			if($model===null) {
 				throw new CHttpException(500,Yii::t(
-					$this->translateCategory,
+					'YcmModule.ycm',
 					'Could not load model "{name}".',
 					array('{name}'=>$name)
 				));
@@ -65,7 +64,7 @@ class YcmModule extends CWebModule
 			if($this->uploadPath===false && $this->uploadCreate===true) {
 				if (!mkdir($path,$this->permissions,true)) {
 					throw new CHttpException(500,Yii::t(
-						$this->translateCategory,
+						'YcmModule.ycm',
 						'Could not create upload folder "{dir}".',
 						array('{dir}'=>$path)
 					));
@@ -323,7 +322,10 @@ class YcmModule extends CWebModule
 			case 'chosen':
 				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
-					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$model->getAttributeLabel($attribute),
+					'empty'=>Yii::t('YcmModule.ycm',
+						'Choose {name}',
+						array('{name}'=>$model->getAttributeLabel($attribute))
+					),
 					'class'=>'span5 chzn-select'
 				);
 				if ($attributeOptions) {
@@ -336,7 +338,10 @@ class YcmModule extends CWebModule
 			case 'chosenMultiple':
 				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
-					'data-placeholder'=>Yii::t($this->translateCategory,'Choose').' '.$model->getAttributeLabel($attribute),
+					'data-placeholder'=>Yii::t('YcmModule.ycm',
+						'Choose {name}',
+						array('{name}'=>$model->getAttributeLabel($attribute))
+					),
 					'multiple'=>'multiple',
 					'class'=>'span5 chzn-select'
 				);
@@ -349,7 +354,10 @@ class YcmModule extends CWebModule
 
 			case 'dropDown':
 				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),array(
-					'empty'=>Yii::t($this->translateCategory,'Choose').' '.$model->getAttributeLabel($attribute),
+					'empty'=>Yii::t('YcmModule.ycm',
+						'Choose {name}',
+						array('{name}'=>$model->getAttributeLabel($attribute))
+					),
 					'class'=>'span5')
 				);
 				break;
@@ -375,7 +383,7 @@ class YcmModule extends CWebModule
 					ob_start();
 					echo '<p>';
 					$this->controller->widget('bootstrap.widgets.TbButton', array(
-						'label'=>Yii::t($this->translateCategory,'Download'),
+						'label'=>Yii::t('YcmModule.ycm','Download'),
 						'type'=>'',
 						'url'=>$model->getFileUrl($attribute),
 					));
@@ -390,18 +398,18 @@ class YcmModule extends CWebModule
 			case 'image':
 				if (!$model->isNewRecord && !empty($model->$attribute)) {
 					$modalName='modal-image-'.$attribute;
-					$image=CHtml::image($model->getFileUrl($attribute),Yii::t($this->translateCategory,'Image'),array(
+					$image=CHtml::image($model->getFileUrl($attribute),Yii::t('YcmModule.ycm','Image'),array(
 						'class'=>'modal-image')
 					);
 					ob_start();
 					$this->controller->beginWidget('bootstrap.widgets.TbModal',array('id'=>$modalName));
 					echo '<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h4>';
-					echo Yii::t($this->translateCategory,'Image preview').'</h4></div>';
+					echo Yii::t('YcmModule.ycm','Image preview').'</h4></div>';
 					echo '<div class="modal-body">'.$image.'</div>';
 					$this->controller->endWidget();
 					echo '<p>';
 					$this->controller->widget('bootstrap.widgets.TbButton', array(
-						'label'=>Yii::t($this->translateCategory,'Preview'),
+						'label'=>Yii::t('YcmModule.ycm','Preview'),
 						'type'=>'',
 						'htmlOptions'=>array(
 							'data-toggle'=>'modal',

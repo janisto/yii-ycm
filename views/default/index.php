@@ -6,7 +6,6 @@ $this->pageTitle=$title;
 ?>
 
 <?php $this->beginWidget('bootstrap.widgets.TbHeroUnit'); ?>
-	<h2><?php echo Yii::t($this->module->translateCategory,'List'); ?></h2>
 	<?php foreach($models as $model): ?>
 		<div class="btn-toolbar">
 			<?php
@@ -15,21 +14,21 @@ $this->pageTitle=$title;
 			if ($this->module->getDownloadExcel($model)) {
 				$download=true;
 				array_push($downloadItems,array(
-					'label'=>Yii::t($this->module->translateCategory,'Excel'),
+					'label'=>Yii::t('YcmModule.ycm','Excel'),
 					'url'=>$this->createUrl('model/excel',array('name'=>$model)),
 				));
 			}
 			if ($this->module->getDownloadMsCsv($model)) {
 				$download=true;
 				array_push($downloadItems,array(
-					'label'=>Yii::t($this->module->translateCategory,'MS CSV'),
+					'label'=>Yii::t('YcmModule.ycm','MS CSV'),
 					'url'=>$this->createUrl('model/mscsv',array('name'=>$model)),
 				));
 			}
 			if ($this->module->getDownloadCsv($model)) {
 				$download=true;
 				array_push($downloadItems,array(
-					'label'=>Yii::t($this->module->translateCategory,'CSV'),
+					'label'=>Yii::t('YcmModule.ycm','CSV'),
 					'url'=>$this->createUrl('model/csv',array('name'=>$model)),
 				));
 			}
@@ -42,11 +41,11 @@ $this->pageTitle=$title;
 						'url'=>$this->createUrl('model/list',array('name'=>$model)),
 					),
 					array(
-						'label'=>Yii::t($this->module->translateCategory,'Create'),
+						'label'=>Yii::t('YcmModule.ycm','Create'),
 						'url'=>$this->createUrl('model/create',array('name'=>$model)),
 					),
 					array(
-						'label'=>Yii::t($this->module->translateCategory,'List'),
+						'label'=>Yii::t('YcmModule.ycm','List'),
 						'url'=>$this->createUrl('model/list',array('name'=>$model)),
 					),
 				),
@@ -55,7 +54,10 @@ $this->pageTitle=$title;
 				$this->widget('bootstrap.widgets.TbButtonGroup', array(
 					'type'=>'',
 					'buttons'=>array(
-						array('label'=>Yii::t($this->module->translateCategory,'Download').' '.$this->module->getPluralName($model)),
+						array('label'=>Yii::t('YcmModule.ycm',
+							'Download {name}',
+							array('{name}'=>$this->module->getPluralName($model))
+						)),
 						array('items'=>$downloadItems),
 					),
 				));

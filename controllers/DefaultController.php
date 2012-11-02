@@ -8,7 +8,7 @@ class DefaultController extends AdminController
 	public function actionIndex()
 	{
 		$this->render('index',array(
-			'title'=>Yii::t($this->module->translateCategory,'Administration'),
+			'title'=>Yii::t('YcmModule.ycm','Administration'),
 			'models'=>$this->module->modelsList,
 		));
 	}
@@ -39,7 +39,7 @@ class DefaultController extends AdminController
 				$this->redirect(Yii::app()->createUrl($this->module->name));
 			}
 		}
-		$this->render('login',array('model'=>$model,'title'=>Yii::t($this->module->translateCategory,'Login')));
+		$this->render('login',array('model'=>$model,'title'=>Yii::t('YcmModule.ycm','Login')));
 	}
 
 	/**

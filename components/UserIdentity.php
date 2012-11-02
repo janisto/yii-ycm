@@ -23,7 +23,7 @@ class UserIdentity extends CUserIdentity
 
 		if ($user===null || $pass===null) {
 			throw new CHttpException(500,Yii::t(
-				Yii::app()->getModule('ycm')->translateCategory,
+				'YcmModule.ycm',
 				'Please configure "username" and "password" properties of the module in configuration file.')
 			);
 		} else if (!isset($users[$this->username])) {

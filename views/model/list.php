@@ -14,7 +14,10 @@ $this->pageTitle=$title;
 		'buttons'=>array(
 			array(
 				'type'=>'primary',
-				'label'=>Yii::t($this->module->translateCategory,'Create').' '.$this->module->getSingularName($model),
+				'label'=>Yii::t('YcmModule.ycm',
+					'Create {name}',
+					array('{name}'=>$this->module->getSingularName($model))
+				),
 				'url'=>$this->createUrl('model/create',array('name'=>get_class($model))),
 			),
 		),

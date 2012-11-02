@@ -11,9 +11,9 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 	'htmlOptions'=>array('class'=>'well'),
 ));
 
-echo '<p>'.Yii::t($this->module->translateCategory,'Please enter your username and password.').'</p>';
+echo '<p>'.Yii::t('YcmModule.ycm','Please enter your username and password.').'</p>';
 echo $form->textFieldRow($model,'username',array('class'=>'input-medium','prepend'=>'<i class="icon-user"></i>')).' ';
 echo $form->passwordFieldRow($model,'password',array('class'=>'input-medium','prepend'=>'<i class="icon-lock"></i>')).' ';
-$this->widget('bootstrap.widgets.TbButton',array('buttonType'=>'submit','label'=>Yii::t($this->module->translateCategory,'Login')));
+$this->widget('bootstrap.widgets.TbButton',array('buttonType'=>'submit','label'=>Yii::t('YcmModule.ycm','Login')));
 echo '<br />'.$form->checkboxRow($model,'rememberMe');
 $this->endWidget();

@@ -37,17 +37,17 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 				array(
 					'buttonType'=>'submit',
 					'type'=>'primary',
-					'label'=>Yii::t($this->module->translateCategory,'Save'),
+					'label'=>Yii::t('YcmModule.ycm','Save'),
 					'htmlOptions'=>array('name'=>'_save')
 				),
 				array(
 					'buttonType'=>'submit',
-					'label'=>Yii::t($this->module->translateCategory,'Save and add another'),
+					'label'=>Yii::t('YcmModule.ycm','Save and add another'),
 					'htmlOptions'=>array('name'=>'_addanother')
 				),
 				array(
 					'buttonType'=>'submit',
-					'label'=>Yii::t($this->module->translateCategory,'Save and continue editing'),
+					'label'=>Yii::t('YcmModule.ycm','Save and continue editing'),
 					'htmlOptions'=>array('name'=>'_continue')
 				),
 			);
@@ -56,14 +56,14 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 					'buttonType'=>'link',
 					'type'=>'danger',
 					'url'=>'#',
-					'label'=>Yii::t($this->module->translateCategory,'Delete'),
+					'label'=>Yii::t('YcmModule.ycm','Delete'),
 					'htmlOptions'=>array(
 						'submit'=>array(
 							'model/delete',
 							'name'=>get_class($model),
 							'pk'=>$model->primaryKey,
 						),
-						'confirm'=>Yii::t($this->module->translateCategory,'Are you sure you want to delete this item?'),
+						'confirm'=>Yii::t('YcmModule.ycm','Are you sure you want to delete this item?'),
 					)
 				));
 			}

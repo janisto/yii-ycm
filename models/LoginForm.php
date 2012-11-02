@@ -32,9 +32,9 @@ class LoginForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'username'=>Yii::t(Yii::app()->getModule('ycm')->translateCategory,'Username'),
-			'password'=>Yii::t(Yii::app()->getModule('ycm')->translateCategory,'Password'),
-			'rememberMe'=>Yii::t(Yii::app()->getModule('ycm')->translateCategory,'Remember me next time'),
+			'username'=>Yii::t('YcmModule.ycm','Username'),
+			'password'=>Yii::t('YcmModule.ycm','Password'),
+			'rememberMe'=>Yii::t('YcmModule.ycm','Remember me next time'),
 		);
 	}
 
@@ -47,7 +47,7 @@ class LoginForm extends CFormModel
 		if (!$this->hasErrors()) {
 			$this->_identity=new UserIdentity($this->username,$this->password);
 			if (!$this->_identity->authenticate()) {
-				$this->addError('password',Yii::t(Yii::app()->getModule('ycm')->translateCategory,'Incorrect username or password.'));
+				$this->addError('password',Yii::t('YcmModule.ycm','Incorrect username or password.'));
 			}
 		}
 	}

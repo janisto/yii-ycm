@@ -25,7 +25,7 @@ class ModelController extends AdminController
 		if ($file instanceof CUploadedFile) {
 			if (!in_array(strtolower($file->getExtensionName()),array('gif','png','jpg','jpeg'))) {
 				throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
-					$this->module->translateCategory,
+					'YcmModule.ycm',
 					'Invalid file extension "{ext}".',
 					array('{ext}'=>$file->getExtensionName())
 				))));
@@ -35,7 +35,7 @@ class ModelController extends AdminController
 			if (!is_dir($attributePath)) {
 				if (!mkdir($attributePath,$this->module->permissions,true)) {
 					throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
-						$this->module->translateCategory,
+						'YcmModule.ycm',
 						'Could not create folder "{dir}". Make sure "uploads" folder is writable.',
 						array('{dir}'=>$attributePath)
 					))));
@@ -44,7 +44,7 @@ class ModelController extends AdminController
 			$path=$attributePath.DIRECTORY_SEPARATOR.$fileName;
 			if (file_exists($path) || !$file->saveAs($path)) {
 				throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
-					$this->module->translateCategory,
+					'YcmModule.ycm',
 					'Could not save file or file exists: "{file}".',
 					array('{file}'=>$path)
 				))));
@@ -57,7 +57,7 @@ class ModelController extends AdminController
 			exit();
 		} else {
 			throw new CHttpException(500,CJSON::encode(array('error'=>Yii::t(
-				$this->module->translateCategory,
+				'YcmModule.ycm',
 				'Could not upload file.'
 			))));
 		}
@@ -178,7 +178,7 @@ class ModelController extends AdminController
 						if (!is_dir($attributePath)) {
 							if (!mkdir($attributePath,$this->module->permissions,true)) {
 								throw new CHttpException(500,Yii::t(
-									$this->module->translateCategory,
+									'YcmModule.ycm',
 									'Could not create folder "{dir}". Make sure "uploads" folder is writable.',
 									array('{dir}'=>$attributePath)
 								));
@@ -187,7 +187,7 @@ class ModelController extends AdminController
 						$path=$attributePath.DIRECTORY_SEPARATOR.$fileName;
 						if (file_exists($path) || !$file->saveAs($path)) {
 							throw new CHttpException(500,Yii::t(
-								$this->module->translateCategory,
+								'YcmModule.ycm',
 								'Could not save file or file exists: "{file}".',
 								array('{file}'=>$path)
 							));
@@ -199,7 +199,7 @@ class ModelController extends AdminController
 			}
 
 			if ($model->save()) {
-				Yii::app()->user->setFlash('success',Yii::t($this->module->translateCategory,'Changes saved.'));
+				Yii::app()->user->setFlash('success',Yii::t('YcmModule.ycm','Changes saved.'));
 				$this->redirectUser($name,$model->primaryKey);
 			} else if (count($paths)!=0) {
 				foreach($paths as $path) {
@@ -210,7 +210,10 @@ class ModelController extends AdminController
 			}
 		}
 
-		$title=Yii::t($this->module->translateCategory,'Create').' '.$this->module->getSingularName($model);
+		$title=Yii::t('YcmModule.ycm',
+			'Create {name}',
+			array('{name}'=>$this->module->getSingularName($model))
+		);
 		$this->breadcrumbs=array(
 			$this->module->getAdminName($model)=>$this->createUrl('model/list',array('name'=>$name)),
 			$title,
@@ -264,7 +267,7 @@ class ModelController extends AdminController
 						if (!is_dir($attributePath)) {
 							if (!mkdir($attributePath,$this->module->permissions,true)) {
 								throw new CHttpException(500,Yii::t(
-									$this->module->translateCategory,
+									'YcmModule.ycm',
 									'Could not create folder "{dir}". Make sure "uploads" folder is writable.',
 									array('{dir}'=>$attributePath)
 								));
@@ -273,7 +276,7 @@ class ModelController extends AdminController
 						$path=$attributePath.DIRECTORY_SEPARATOR.$fileName;
 						if (file_exists($path) || !$file->saveAs($path)) {
 							throw new CHttpException(500,Yii::t(
-								$this->module->translateCategory,
+								'YcmModule.ycm',
 								'Could not save file or file exists: "{file}".',
 								array('{file}'=>$path)
 							));
@@ -293,7 +296,7 @@ class ModelController extends AdminController
 						}
 					}
 				}
-				Yii::app()->user->setFlash('success',Yii::t($this->module->translateCategory,'Changes saved.'));
+				Yii::app()->user->setFlash('success',Yii::t('YcmModule.ycm','Changes saved.'));
 				$this->redirectUser($name,$model->primaryKey);
 			} else if (count($paths)!=0) {
 				foreach($paths as $path) {
@@ -304,14 +307,20 @@ class ModelController extends AdminController
 			}
 		}
 
-		$title=Yii::t($this->module->translateCategory,'Edit').' '.$this->module->getSingularName($model);
+		$title=Yii::t('YcmModule.ycm',
+			'Edit {name}',
+			array('{name}'=>$this->module->getSingularName($model))
+		);
 		$this->breadcrumbs=array(
 			$this->module->getAdminName($model)=>$this->createUrl('model/list',array('name'=>$name)),
 			$title,
 		);
 
 		$this->render('form',array(
-			'title'=>Yii::t($this->module->translateCategory,'Edit').' '.$this->module->getSingularName($model),
+			'title'=>Yii::t('YcmModule.ycm',
+				'Edit {name}',
+				array('{name}'=>$this->module->getSingularName($model))
+			),
 			'model'=>$model,
 		));
 	}
@@ -347,7 +356,7 @@ class ModelController extends AdminController
 			}
 		} else {
 			Yii::app()->user->setFlash('error',Yii::t(
-				$this->module->translateCategory,
+				'YcmModule.ycm',
 				'Could not delete entry "{name}" with an ID "{pk}".',
 				array('{name}'=>$name,'{pk}'=>$pk)
 			));
@@ -366,7 +375,7 @@ class ModelController extends AdminController
 		if (isset($_POST['_save'])) {
 			$this->redirect($this->createUrl('model/list',array('name'=>$name)));
 		} else if (isset($_POST['_addanother'])) {
-			Yii::app()->user->setFlash('success',Yii::t($this->module->translateCategory,'Changes saved. You can add a new entry.'));
+			Yii::app()->user->setFlash('success',Yii::t('YcmModule.ycm','Changes saved. You can add a new entry.'));
 			$this->redirect($this->createUrl('model/create',array('name'=>$name)));
 		} else if (isset($_POST['_continue'])) {
 			$this->redirect($this->createUrl('model/update',array('name'=>$name,'pk'=>$pk)));
