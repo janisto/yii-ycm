@@ -37,11 +37,10 @@ class YcmModule extends CWebModule
 	public function loadModel($name,$pk=null)
 	{
 		$name=(string)$name;
-		if ($pk===null) {
-			$model=new $name;
-		} else {
-			$model=$name::model()->findByPk((int)$pk);
-			if($model===null) {
+		$model=new $name;
+		if ($pk!==null) {
+			$model=$model->findByPk((int)$pk);
+			if ($model===null) {
 				throw new CHttpException(500,Yii::t(
 					'YcmModule.ycm',
 					'Could not load model "{name}".',
@@ -58,10 +57,10 @@ class YcmModule extends CWebModule
 	 */
 	public function init()
 	{
-		if($this->uploadPath===null) {
+		if ($this->uploadPath===null) {
 			$path=Yii::app()->basePath.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'uploads';
 			$this->uploadPath=realpath($path);
-			if($this->uploadPath===false && $this->uploadCreate===true) {
+			if ($this->uploadPath===false && $this->uploadCreate===true) {
 				if (!mkdir($path,$this->permissions,true)) {
 					throw new CHttpException(500,Yii::t(
 						'YcmModule.ycm',
@@ -71,7 +70,7 @@ class YcmModule extends CWebModule
 				}
 			}
 		}
-		if($this->uploadUrl===null) {
+		if ($this->uploadUrl===null) {
 			$this->uploadUrl=Yii::app()->request->baseUrl .'/uploads';
 		}
 
@@ -157,7 +156,7 @@ class YcmModule extends CWebModule
 	public function createWidget($form,$model,$attribute)
 	{
 		$lang=Yii::app()->language;
-		if($lang=='en_us') {
+		if ($lang=='en_us') {
 			$lang='en';
 		}
 
@@ -286,7 +285,7 @@ class YcmModule extends CWebModule
 				if ($attributeOptions) {
 					$options=array_merge($options,$attributeOptions);
 				}
-				if($this->redactorUpload===true) {
+				if ($this->redactorUpload===true) {
 					$redactorOptions=array(
 						'options'=>array(
 							'imageUpload'=>Yii::app()->createUrl($this->name.'/model/redactorImageUpload',array(
@@ -655,7 +654,7 @@ class YcmModule extends CWebModule
 	 */
 	public function beforeControllerAction($controller, $action)
 	{
-		if(parent::beforeControllerAction($controller, $action)) {
+		if (parent::beforeControllerAction($controller, $action)) {
 			// this method is called before any module controller action is performed
 			$this->controller=$controller;
 			$route=$controller->id.'/'.$action->id;
@@ -663,7 +662,7 @@ class YcmModule extends CWebModule
 				'default/login',
 				'default/error',
 			);
-			if($this->password!==false && Yii::app()->user->isGuest && !in_array($route,$publicPages)) {
+			if ($this->password!==false && Yii::app()->user->isGuest && !in_array($route,$publicPages)) {
 				Yii::app()->user->loginRequired();
 			} else {
 				return true;

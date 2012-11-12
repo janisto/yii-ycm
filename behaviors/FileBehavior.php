@@ -27,7 +27,7 @@ class FileBehavior extends CModelBehavior
 	public function getAbsoluteFileUrl($attribute)
 	{
 		$url=$this->getFileUrl($attribute);
-		if($url) {
+		if ($url) {
 			return Yii::app()->getRequest()->getHostInfo().$url;
 		}
 		return false;

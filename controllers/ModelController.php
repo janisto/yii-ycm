@@ -456,7 +456,7 @@ class ModelController extends AdminController
 
 		foreach($model->tableSchema->columns as $column) {
 			// skip primary key?
-			//if($column->isPrimaryKey===true) continue;
+			//if ($column->isPrimaryKey===true) continue;
 
 			// no new lines in CSV format.
 			$header[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($model->getAttributeLabel($column->name)));
@@ -522,7 +522,7 @@ class ModelController extends AdminController
 
 		foreach($model->tableSchema->columns as $column) {
 			// skip primary key?
-			//if($column->isPrimaryKey===true) continue;
+			//if ($column->isPrimaryKey===true) continue;
 
 			$header.='<th align="left" style="color: #ef4a2c;">'.(string)trim($model->getAttributeLabel($column->name)).'</th>';
 

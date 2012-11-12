@@ -8,7 +8,7 @@ $this->pageTitle=$title;
 
 $attributes = array();
 foreach ($model->attributeLabels() as $attribute => $label) {
-	if(isset($model->tableSchema->columns[$attribute]) && $model->tableSchema->columns[$attribute]->isPrimaryKey===true) {
+	if (isset($model->tableSchema->columns[$attribute]) && $model->tableSchema->columns[$attribute]->isPrimaryKey===true) {
 		continue;
 	}
 	$attributes[]=$attribute;
