@@ -37,6 +37,12 @@ Installation
 Changelog
 ------------------
 
+### v0.3
+
+- Bootstrap typehead support.
+- Localization support and Finnish translation.
+- Fix: loadModel doesn't require PHP 5.3+ anymore.
+
 ### v0.2
 
 - Initial version.
