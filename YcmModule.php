@@ -361,6 +361,37 @@ class YcmModule extends CWebModule
 				);
 				break;
 
+			case 'typeHead':
+				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
+					echo '<div class="control-group">';
+					echo $form->labelEx($model,$attribute,array('class'=>'control-label'));
+					echo '<div class="controls">';
+				} else {
+					echo $form->labelEx($model,$attribute);
+				}
+				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
+				$options=array(
+					'model'=>$model,
+					'attribute'=>$attribute,
+					'htmlOptions'=>array('class'=>'span5','autocomplete'=>'off'),
+					'options'=>array(
+						'name'=>'typeahead',
+						'source'=>$this->getAttributeChoices($model,$attribute),
+						'matcher'=>"js:function(item) {
+							return ~item.toLowerCase().indexOf(this.query.toLowerCase());
+						}",
+					),
+				);
+				if ($attributeOptions) {
+					$options=array_merge_recursive($options,$attributeOptions);
+				}
+				$this->controller->widget('bootstrap.widgets.TbTypeahead',$options);
+				echo $form->error($model,$attribute);
+				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
+					echo '</div></div>';
+				}
+				break;
+
 			case 'radioButton':
 				echo $form->radioButtonListRow($model,$attribute,$this->getAttributeChoices($model,$attribute));
 				break;
