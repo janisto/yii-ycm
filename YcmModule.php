@@ -96,6 +96,7 @@ class YcmModule extends CWebModule
 			),
 			'user'=>array(
 				'class'=>'CWebUser',
+				'allowAutoLogin'=>true,
 				'stateKeyPrefix'=>$this->name,
 				'loginUrl'=>Yii::app()->createUrl($this->name.'/default/login'),
 			),
