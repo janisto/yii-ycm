@@ -39,6 +39,10 @@ $this->widget('ext.chosen.EChosenWidget',array(
 Changelog
 ------------------
 
+### v1.1
+
+- Chosen updated to version 0.9.10.
+
 ### v1.0
 
 - Initial version.

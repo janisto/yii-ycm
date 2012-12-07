@@ -37,6 +37,13 @@ Installation
 Changelog
 ------------------
 
+### v0.4
+
+- Update yii-chosen to version v1.1.
+- Add first and last to pager.
+- Fix: allow auto login.
+
+
 ### v0.3
 
 - Bootstrap typehead support.
