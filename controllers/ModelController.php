@@ -126,6 +126,14 @@ class ModelController extends AdminController
 			'type'=>'striped bordered condensed',
 			'dataProvider'=>$model->search(),
 			'filter'=>$model,
+			'pager'=>array(
+				'class'=>'bootstrap.widgets.TbPager',
+				'displayFirstAndLast'=>true,
+				'firstPageLabel'=>'&lang;&lang;',
+				'prevPageLabel'=>'&lang;',
+				'nextPageLabel'=>'&rang;',
+				'lastPageLabel'=>'&rang;&rang;',
+			),
 			'columns'=>array(
 				array(
 					'class'=>'bootstrap.widgets.TbButtonColumn',
