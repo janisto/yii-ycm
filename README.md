@@ -5,6 +5,8 @@ YCM - Yii Content Management module
 
 - [Documentation](http://janisto.github.com/yii-ycm/)
 - [Examples](http://janisto.github.com/yii-ycm/)
+- [Github Project Page](https://github.com/janisto/yii-ycm/)
+- [Forum topic](http://www.yiiframework.com/forum/index.php/topic/37136-module-ycm-yii-content-management-module/)
 
 Requirements
 ------------------
