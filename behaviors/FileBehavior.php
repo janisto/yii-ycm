@@ -10,10 +10,10 @@ class FileBehavior extends CModelBehavior
 	 */
 	public function getFileUrl($attribute)
 	{
-		$name=strtolower(get_class($this->owner));
+		$name=get_class($this->owner);
 		if ($this->owner->hasAttribute($attribute) && !empty($this->owner->$attribute)) {
 			$file=$this->owner->$attribute;
-			return Yii::app()->getModule('ycm')->uploadUrl."/$name/$attribute/$file";
+			return Yii::app()->getModule('ycm')->getAttributeUrl($name,$attribute,$file);
 		}
 		return false;
 	}

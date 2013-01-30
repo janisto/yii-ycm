@@ -470,7 +470,20 @@ class YcmModule extends CWebModule
 	 */
 	public function getAttributePath($name,$attribute)
 	{
-		return $this->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.$attribute;
+		return $this->uploadPath.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.strtolower($attribute);
+	}
+
+	/**
+	 * Get attribute file URL.
+	 *
+	 * @param string $name Model name
+	 * @param string $attribute Model attribute
+	 * @param string $file Filename
+	 * @return string Model attribute file URL
+	 */
+	public function getAttributeUrl($name,$attribute,$file)
+	{
+		return $this->uploadUrl.'/'.strtolower($name).'/'.strtolower($attribute).'/'.$file;
 	}
 
 	/**

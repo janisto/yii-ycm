@@ -16,6 +16,7 @@ class ModelController extends AdminController
 	 */
 	public function actionRedactorImageUpload($name,$attr)
 	{
+		$name=(string)$name;
 		$attribute=(string)$attr;
 
 		// Make Yii think this is a AJAX request.
@@ -49,7 +50,7 @@ class ModelController extends AdminController
 					array('{file}'=>$path)
 				))));
 			}
-			$attributeUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attribute.'/'.$fileName;
+			$attributeUrl=$this->module->getAttributeUrl($name,$attribute,$fileName);
 			$data = array(
 				'filelink'=>$attributeUrl,
 			);
@@ -71,16 +72,17 @@ class ModelController extends AdminController
 	 */
 	public function actionRedactorImageList($name,$attr)
 	{
+		$name=(string)$name;
 		$attribute=(string)$attr;
 		$attributePath=$this->module->getAttributePath($name,$attribute);
-		$attributeUrl=$this->module->uploadUrl.'/'.strtolower($name).'/'.$attribute.'/';
 		$files=CFileHelper::findFiles($attributePath,array('fileTypes'=>array('gif','png','jpg','jpeg')));
 		$data=array();
 		if ($files) {
 			foreach($files as $file) {
+				$fileUrl=$this->module->getAttributeUrl($name,$attribute,basename($file));
 				$data[]=array(
-					'thumb'=>$attributeUrl.basename($file),
-					'image'=>$attributeUrl.basename($file),
+					'thumb'=>$fileUrl,
+					'image'=>$fileUrl,
 				);
 			}
 		}
