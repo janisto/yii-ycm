@@ -3,7 +3,10 @@
 /* @var $model LoginForm */
 /* @var $form TbActiveForm */
 
-$this->pageTitle=$title;
+$this->pageTitle=Yii::t('YcmModule.ycm','Login');
+$this->breadcrumbs=array(
+	Yii::t('YcmModule.ycm','Login'),
+);
 
 $form = $this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 	'id'=>'verticalForm',

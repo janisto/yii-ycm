@@ -14,7 +14,6 @@ foreach($model->attributeLabels() as $attribute => $label) {
 	$attributes[]=$attribute;
 }
 $attributes=array_filter(array_unique(array_map('trim',$attributes)));
-
 ?>
 
 <div class="row-fluid">

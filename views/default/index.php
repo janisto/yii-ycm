@@ -2,7 +2,7 @@
 /* @var $this DefaultController */
 /* @var $models array */
 
-$this->pageTitle=$title;
+$this->pageTitle=Yii::t('YcmModule.ycm','Administration');
 ?>
 
 <?php $this->beginWidget('bootstrap.widgets.TbHeroUnit'); ?>

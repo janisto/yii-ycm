@@ -25,6 +25,7 @@ class YcmModule extends CWebModule
 	public $uploadCreate=false;
 	public $redactorUpload=false;
 	public $permissions=0774;
+	public $analytics=array();
 
 	/**
 	 * Load model.
@@ -58,7 +59,7 @@ class YcmModule extends CWebModule
 	public function init()
 	{
 		if ($this->uploadPath===null) {
-			$path=Yii::app()->basePath.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'uploads';
+			$path=Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'uploads';
 			$this->uploadPath=realpath($path);
 			if ($this->uploadPath===false && $this->uploadCreate===true) {
 				if (!mkdir($path,$this->permissions,true)) {
@@ -697,9 +698,9 @@ class YcmModule extends CWebModule
 	 * @param CAction $action
 	 * @return bool
 	 */
-	public function beforeControllerAction($controller, $action)
+	public function beforeControllerAction($controller,$action)
 	{
-		if (parent::beforeControllerAction($controller, $action)) {
+		if (parent::beforeControllerAction($controller,$action)) {
 			// this method is called before any module controller action is performed
 			$this->controller=$controller;
 			$route=$controller->id.'/'.$action->id;

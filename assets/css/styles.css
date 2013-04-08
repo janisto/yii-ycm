@@ -31,3 +31,15 @@ body {
 .ui-timepicker-div dl dd.ui_tpicker_time {
 	padding-top: 0;
 }
+#visitorData, #platformData {
+	height: 250px;
+}
+.morris-hover {
+	cursor: default;
+}
+.morris-hover-row-label {
+	white-space: nowrap;
+}
+.morris-hover.morris-default-style {
+	background: rgba(255, 255, 255, 0.90) !important;
+}

@@ -11,7 +11,7 @@ $cs->registerCssFile($baseUrl.'/css/styles.css');
 <head>
 	<meta charset="utf-8">
 	<meta name="robots" content="NONE,NOARCHIVE" />
-	<title><?php print Yii::t('YcmModule.ycm','Administration') ?></title>
+	<title><?php echo $this->pageTitle; ?></title>
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
@@ -24,6 +24,16 @@ $this->widget('bootstrap.widgets.TbNavbar', array(
 	'brandUrl'=>Yii::app()->createUrl('/'.$this->module->name),
 	'collapse'=>true, // requires bootstrap-responsive.css
 	'items'=>array(
+		array(
+			'class'=>'bootstrap.widgets.TbMenu',
+			'items'=>array(
+				array(
+					'label'=>Yii::t('YcmModule.ycm','Statistics'),
+					'url'=>array('/'.$this->module->name.'/default/stats'),
+					'visible'=>!Yii::app()->user->isGuest,
+				),
+			),
+		),
 		array(
 			'class'=>'bootstrap.widgets.TbMenu',
 			'htmlOptions'=>array('class'=>'pull-right'),

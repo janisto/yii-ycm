@@ -1,0 +1,274 @@
+<?php
+/* @var $this DefaultController */
+/* @var $days integer */
+/* @var $deviceData array */
+/* @var $visitorData array */
+/* @var $keywords array */
+/* @var $referrers array */
+/* @var $pages object */
+/* @var $usage array */
+
+$this->pageTitle=Yii::t('YcmModule.ycm','Statistics');
+$this->breadcrumbs=array(
+	Yii::t('YcmModule.ycm','Statistics'),
+);
+
+$lang=str_replace('-','_',strtolower(Yii::app()->language));
+$parts=explode('_',$lang);
+if (count($parts)==2) {
+	$lang=$parts[0].'-'.strtoupper($parts[1]);
+}
+
+$cs=Yii::app()->clientScript;
+$baseUrl=$this->module->assetsUrl;
+$cs->registerCssFile($baseUrl.'/css/morris-0.4.1.min.css');
+$cs->registerCoreScript('jquery');
+$cs->registerCoreScript('jquery.ui');
+if ($lang!='en' && $lang!='en-US') {
+	$cs->registerScriptFile($cs->getCoreScriptUrl().'/jui/js/jquery-ui-i18n.min.js');
+	$cs->registerScript('ycm-localize-date-'.$lang,"
+	jQuery(function($) {
+		var lang='$lang';
+		if (jQuery.datepicker.regional[lang]===undefined) {
+			lang=''; // back to default language
+		}
+		jQuery.datepicker.setDefaults(jQuery.datepicker.regional[lang]);
+	});
+	", CClientScript::POS_END);
+}
+$cs->registerScriptFile($baseUrl.'/js/raphael-2.1.0.min.js', CClientScript::POS_END);
+$cs->registerScriptFile($baseUrl.'/js/morris-0.4.1.min.js', CClientScript::POS_END);
+$cs->registerScript('ycm-morris',"
+jQuery(function($) {
+	Morris.Line({
+		element: 'visitorData',
+		hideHover: 'auto',
+		lineColors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
+		xLabelFormat: function (x) { return $.datepicker.formatDate('M d', new Date(x)); },
+		dateFormat: function (x) { return $.datepicker.formatDate('DD, MM d, yy', new Date(x)); },
+		data: ".CJSON::encode($visitorData).",
+		xkey: 'date',
+		ykeys: ['a','b','c','d','e'],
+		labels: ['".Yii::t('YcmModule.ycm','Pageviews')."','".Yii::t('YcmModule.ycm','Unique Pageviews')."','".Yii::t('YcmModule.ycm','Visits')."', '".Yii::t('YcmModule.ycm','Unique Visitors')."','".Yii::t('YcmModule.ycm','New Visitors')."']
+	});
+	Morris.Area({
+		element: 'platformData',
+		hideHover: 'auto',
+		lineColors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
+		xLabelFormat: function (x) { return $.datepicker.formatDate('M d', new Date(x)); },
+		dateFormat: function (x) { return $.datepicker.formatDate('DD, MM d, yy', new Date(x)); },
+		data: ".CJSON::encode($deviceData).",
+		xkey: 'date',
+		ykeys: ['a','b','c'],
+		labels: ['".Yii::t('YcmModule.ycm','Desktop Traffic')."','".Yii::t('YcmModule.ycm','Tablet Traffic')."','".Yii::t('YcmModule.ycm','Smartphone Traffic')."']
+	});
+});
+", CClientScript::POS_END);
+?>
+
+<h2><?php echo Yii::t('YcmModule.ycm','Google Analytics summary for the past {days} days',array('{days}'=>$days)); ?></h2>
+
+<div class="row-fluid">
+	<h3><?php echo Yii::t('YcmModule.ycm','Overview'); ?></h3>
+	<div id="visitorData"></div>
+</div>
+
+<div class="row-fluid">
+	<h3><?php echo Yii::t('YcmModule.ycm','Traffic Sources'); ?></h3>
+	<div id="platformData"></div>
+</div>
+
+<div class="row-fluid">
+	<div class="span4">
+		<h3><?php echo Yii::t('YcmModule.ycm','Overview'); ?></h3>
+		<?php if (count($usage)>0): ?>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th><?php echo Yii::t('YcmModule.ycm','Metric'); ?></th>
+				<th><?php echo Yii::t('YcmModule.ycm','Value'); ?></th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Pageviews'); ?></td>
+					<td><?php echo number_format($usage['ga:pageviews']); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Unique Pageviews'); ?></td>
+					<td><?php echo number_format($usage['ga:uniquePageviews']); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Visits'); ?></td>
+					<td><?php echo number_format($usage['ga:visits']); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Unique Visitors'); ?></td>
+					<td><?php echo number_format($usage['ga:visitors']); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','New Visitors'); ?></td>
+					<td><?php echo number_format($usage['ga:newVisits']); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Pages/Visit'); ?></td>
+					<td><?php
+						if ($usage['ga:visits']>0) {
+							echo number_format(round($usage['ga:pageviews'] / $usage['ga:visits'], 2), 2);
+						} else {
+							echo '0.00';
+						}
+						?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','New Visits'); ?></td>
+					<td><?php
+						if ($usage['ga:visits']>0) {
+							echo number_format(round(($usage['ga:newVisits'] / $usage['ga:visits']) * 100, 2), 2) . '%';
+						} else {
+							echo '0.00%';
+						}
+						?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Bounce Rate'); ?></td>
+					<td><?php
+						if ($usage['ga:entrances']>0) {
+							echo number_format(round(($usage['ga:bounces'] / $usage['ga:entrances']) * 100, 2), 2) . '%';
+						} else {
+							echo '0.00%';
+						}
+						?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Avg. Time on Site'); ?></td>
+					<td><?php
+						if ($usage['ga:visits']>0) {
+							echo date('H:i:s', round($usage['ga:timeOnSite'] / $usage['ga:visits']));
+						} else {
+							echo '00:00:00';
+						}
+						?></td>
+				</tr>
+				<tr>
+					<td><?php echo Yii::t('YcmModule.ycm','Avg. Time on Page'); ?></td>
+					<td><?php
+						if ($usage['ga:visits']>0) {
+							echo date('H:i:s', round($usage['ga:timeOnPage'] / ($usage['ga:pageviews'] - $usage['ga:exits'])));
+						} else {
+							echo '00:00:00';
+						}
+						?></td>
+				</tr>
+			</tbody>
+		</table>
+		<?php endif ?>
+	</div>
+	<div class="span4">
+		<h3><?php echo Yii::t('YcmModule.ycm','Top Referrers'); ?></h3>
+		<?php if (count($referrers)>0): ?>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th><?php echo Yii::t('YcmModule.ycm','Referrer'); ?></th>
+				<th><?php echo Yii::t('YcmModule.ycm','Visits'); ?></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$i=0;
+			foreach ($referrers as $item) {
+				$i++;
+				$value=number_format($item[1]);
+				echo "
+				<tr>
+					<td>$i</td>
+					<td>{$item[0]}</td>
+					<td>$value</td>
+				</tr>
+				";
+			}
+			?>
+			</tbody>
+		</table>
+		<?php endif ?>
+	</div>
+	<div class="span4">
+		<h3><?php echo Yii::t('YcmModule.ycm','Top Keywords'); ?></h3>
+		<?php if (count($keywords)>0): ?>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th><?php echo Yii::t('YcmModule.ycm','Keyword'); ?></th>
+				<th><?php echo Yii::t('YcmModule.ycm','Visits'); ?></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$i=0;
+			foreach ($keywords as $item) {
+				$i++;
+				$value=number_format($item[1]);
+				echo "
+				<tr>
+					<td>$i</td>
+					<td>{$item[0]}</td>
+					<td>$value</td>
+				</tr>
+				";
+			}
+			?>
+			</tbody>
+		</table>
+		<?php endif ?>
+	</div>
+</div>
+
+<div class="row-fluid">
+	<h3><?php echo Yii::t('YcmModule.ycm','Top Pages'); ?></h3>
+	<?php if (count($pages->rows)>0): ?>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th><?php echo Yii::t('YcmModule.ycm','Page'); ?></th>
+				<th><?php echo Yii::t('YcmModule.ycm','Pageviews'); ?></th>
+				<th><?php echo Yii::t('YcmModule.ycm','Unique Pageviews'); ?></th>
+				<th><?php echo Yii::t('YcmModule.ycm','Avg. Time on Page'); ?></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$i=0;
+			$total1=$pages->totalsForAllResults['ga:pageviews'];
+			$total2=$pages->totalsForAllResults['ga:uniquePageviews'];
+			foreach ($pages->rows as $item) {
+				$percentage1=number_format(round(($item[3]/$total1)*100,2),2);
+				$percentage2=number_format(round(($item[4]/$total2)*100,2),2);
+				$value1=number_format($item[3]);
+				$value2=number_format($item[4]);
+				$hostname=$item[0];
+				$path=$item[1];
+				$time=date('H:i:s',$item[5]);
+				$url='http://'.$hostname.$path;
+				if (strpos($path,$hostname)===0) {
+					$url='http://'.$path;
+				}
+				$i++;
+				echo "
+				<tr>
+					<td>$i</td>
+					<td><a href=\"$url\" title=\"{$item[2]}\" target=\"_blank\">$path</a></td>
+					<td><strong>$value1</strong> ($percentage1%)</td>
+					<td><strong>$value2</strong> ($percentage2%)</td>
+					<td>$time</td>
+				</tr>
+				";
+			}
+			?>
+			</tbody>
+		</table>
+	<?php endif ?>
+</div>

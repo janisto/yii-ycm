@@ -8,9 +8,48 @@ class DefaultController extends AdminController
 	public function actionIndex()
 	{
 		$this->render('index',array(
-			'title'=>Yii::t('YcmModule.ycm','Administration'),
 			'models'=>$this->module->modelsList,
 		));
+	}
+
+	/**
+	 * Displays Google Analytics statistics.
+	 */
+	public function actionStats()
+	{
+		$days=30;
+		$startDate=date('Y-m-d',strtotime("-$days days"));
+		$endDate=date('Y-m-d',strtotime('-1 day'));
+
+		if (!empty($this->module->analytics)
+			&& isset($this->module->analytics['trackingId'])
+			&& isset($this->module->analytics['profileId'])
+			&& isset($this->module->analytics['accessToken'])) {
+			$config=array(
+				'trackingId'=>$this->module->analytics['trackingId'],
+				'profileId'=>$this->module->analytics['profileId'],
+				'accessToken'=>$this->module->analytics['accessToken'],
+				'startDate'=>$startDate,
+				'endDate'=>$endDate,
+			);
+			$stats=new Stats($config);
+			$this->render('stats',array(
+				'days'=>$days,
+				'deviceData'=>$stats->deviceData,
+				'visitorData'=>$stats->visitorData,
+				'keywords'=>$stats->keywords,
+				'referrers'=>$stats->referrers,
+				'pages'=>$stats->pages,
+				'usage'=>$stats->usage,
+			));
+		} else {
+			$stats=new Stats();
+			$authUrl=$stats->client->createAuthUrl();
+			$this->render('setup',array(
+				'stats'=>$stats,
+				'authUrl'=>$authUrl,
+			));
+		}
 	}
 
 	/**
@@ -39,7 +78,9 @@ class DefaultController extends AdminController
 				$this->redirect(Yii::app()->createUrl($this->module->name));
 			}
 		}
-		$this->render('login',array('model'=>$model,'title'=>Yii::t('YcmModule.ycm','Login')));
+		$this->render('login',array(
+			'model'=>$model,
+		));
 	}
 
 	/**

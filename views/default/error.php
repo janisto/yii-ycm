@@ -3,7 +3,7 @@
 /* @var $code string */
 /* @var $message string */
 
-$this->pageTitle=Yii::app()->name.' - '.Yii::t('YcmModule.ycm','Error');
+$this->pageTitle=Yii::t('YcmModule.ycm','Error');
 $this->breadcrumbs=array(
 	Yii::t('YcmModule.ycm','Error'),
 );
