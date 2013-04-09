@@ -3,6 +3,7 @@
 /* @var $days integer */
 /* @var $deviceData array */
 /* @var $visitorData array */
+/* @var $trafficData array */
 /* @var $keywords array */
 /* @var $referrers array */
 /* @var $pages object */
@@ -22,6 +23,8 @@ if (count($parts)==2) {
 $cs=Yii::app()->clientScript;
 $baseUrl=$this->module->assetsUrl;
 $cs->registerCssFile($baseUrl.'/css/morris-0.4.1.min.css');
+$cs->registerScriptFile($baseUrl.'/js/raphael-2.1.0.min.js',CClientScript::POS_END);
+$cs->registerScriptFile($baseUrl.'/js/morris-0.4.1.min.js',CClientScript::POS_END);
 $cs->registerCoreScript('jquery');
 $cs->registerCoreScript('jquery.ui');
 if ($lang!='en' && $lang!='en-US') {
@@ -36,8 +39,6 @@ if ($lang!='en' && $lang!='en-US') {
 	});
 	", CClientScript::POS_END);
 }
-$cs->registerScriptFile($baseUrl.'/js/raphael-2.1.0.min.js', CClientScript::POS_END);
-$cs->registerScriptFile($baseUrl.'/js/morris-0.4.1.min.js', CClientScript::POS_END);
 $cs->registerScript('ycm-morris',"
 jQuery(function($) {
 	Morris.Line({
@@ -49,7 +50,13 @@ jQuery(function($) {
 		data: ".CJSON::encode($visitorData).",
 		xkey: 'date',
 		ykeys: ['a','b','c','d','e'],
-		labels: ['".Yii::t('YcmModule.ycm','Pageviews')."','".Yii::t('YcmModule.ycm','Unique Pageviews')."','".Yii::t('YcmModule.ycm','Visits')."', '".Yii::t('YcmModule.ycm','Unique Visitors')."','".Yii::t('YcmModule.ycm','New Visitors')."']
+		labels: [
+			'".Yii::t('YcmModule.ycm','Pageviews')."',
+			'".Yii::t('YcmModule.ycm','Unique Pageviews')."',
+			'".Yii::t('YcmModule.ycm','Visits')."',
+			'".Yii::t('YcmModule.ycm','Unique Visitors')."',
+			'".Yii::t('YcmModule.ycm','New Visitors')."'
+		]
 	});
 	Morris.Area({
 		element: 'platformData',
@@ -60,7 +67,17 @@ jQuery(function($) {
 		data: ".CJSON::encode($deviceData).",
 		xkey: 'date',
 		ykeys: ['a','b','c'],
-		labels: ['".Yii::t('YcmModule.ycm','Desktop Traffic')."','".Yii::t('YcmModule.ycm','Tablet Traffic')."','".Yii::t('YcmModule.ycm','Smartphone Traffic')."']
+		labels: [
+			'".Yii::t('YcmModule.ycm','Desktop Pageviews')."',
+			'".Yii::t('YcmModule.ycm','Tablet Pageviews')."',
+			'".Yii::t('YcmModule.ycm','Smartphone Pageviews')."'
+		]
+	});
+	Morris.Donut({
+		element: 'trafficData',
+		colors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
+		formatter: function (y,data) { return Morris.commas(y)+' ".Yii::t('YcmModule.ycm','Visits')."' },
+		data: ".CJSON::encode($trafficData)."
 	});
 });
 ", CClientScript::POS_END);
@@ -74,8 +91,61 @@ jQuery(function($) {
 </div>
 
 <div class="row-fluid">
-	<h3><?php echo Yii::t('YcmModule.ycm','Traffic Sources'); ?></h3>
+	<h3><?php echo Yii::t('YcmModule.ycm','Device Traffic'); ?></h3>
 	<div id="platformData"></div>
+</div>
+
+<div class="row-fluid">
+	<div class="span9">
+		<h3><?php echo Yii::t('YcmModule.ycm','Top Pages'); ?></h3>
+		<?php if (count($pages->rows)>0): ?>
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th>#</th>
+					<th><?php echo Yii::t('YcmModule.ycm','Page'); ?></th>
+					<th><?php echo Yii::t('YcmModule.ycm','Pageviews'); ?></th>
+					<th><?php echo Yii::t('YcmModule.ycm','Unique Pageviews'); ?></th>
+					<th><?php echo Yii::t('YcmModule.ycm','Avg. Time on Page'); ?></th>
+				</tr>
+				</thead>
+				<tbody>
+				<?php
+				$i=0;
+				$total1=$pages->totalsForAllResults['ga:pageviews'];
+				$total2=$pages->totalsForAllResults['ga:uniquePageviews'];
+				foreach ($pages->rows as $item) {
+					$percentage1=number_format(round(($item[3]/$total1)*100,2),2);
+					$percentage2=number_format(round(($item[4]/$total2)*100,2),2);
+					$value1=number_format($item[3]);
+					$value2=number_format($item[4]);
+					$hostname=$item[0];
+					$path=$item[1];
+					$time=date('H:i:s',$item[5]);
+					$url='http://'.$hostname.$path;
+					if (strpos($path,$hostname)===0) {
+						$url='http://'.$path;
+					}
+					$i++;
+					echo "
+					<tr>
+						<td>$i</td>
+						<td><a href=\"$url\" title=\"{$item[2]}\" target=\"_blank\">$path</a></td>
+						<td><strong>$value1</strong> ($percentage1%)</td>
+						<td><strong>$value2</strong> ($percentage2%)</td>
+						<td>$time</td>
+					</tr>
+				";
+				}
+				?>
+				</tbody>
+			</table>
+		<?php endif ?>
+	</div>
+	<div class="span3">
+		<h3><?php echo Yii::t('YcmModule.ycm','Traffic Sources'); ?></h3>
+		<div id="trafficData"></div>
+	</div>
 </div>
 
 <div class="row-fluid">
@@ -114,7 +184,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Pages/Visit'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo number_format(round($usage['ga:pageviews'] / $usage['ga:visits'], 2), 2);
+							echo number_format(round($usage['ga:pageviews']/$usage['ga:visits'],2),2);
 						} else {
 							echo '0.00';
 						}
@@ -124,7 +194,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','New Visits'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo number_format(round(($usage['ga:newVisits'] / $usage['ga:visits']) * 100, 2), 2) . '%';
+							echo number_format(round(($usage['ga:newVisits']/$usage['ga:visits'])*100,2),2).'%';
 						} else {
 							echo '0.00%';
 						}
@@ -134,7 +204,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Bounce Rate'); ?></td>
 					<td><?php
 						if ($usage['ga:entrances']>0) {
-							echo number_format(round(($usage['ga:bounces'] / $usage['ga:entrances']) * 100, 2), 2) . '%';
+							echo number_format(round(($usage['ga:bounces']/$usage['ga:entrances'])*100,2),2).'%';
 						} else {
 							echo '0.00%';
 						}
@@ -144,7 +214,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Avg. Time on Site'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo date('H:i:s', round($usage['ga:timeOnSite'] / $usage['ga:visits']));
+							echo date('H:i:s',round($usage['ga:timeOnSite']/$usage['ga:visits']));
 						} else {
 							echo '00:00:00';
 						}
@@ -154,7 +224,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Avg. Time on Page'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo date('H:i:s', round($usage['ga:timeOnPage'] / ($usage['ga:pageviews'] - $usage['ga:exits'])));
+							echo date('H:i:s',round($usage['ga:timeOnPage']/($usage['ga:pageviews']-$usage['ga:exits'])));
 						} else {
 							echo '00:00:00';
 						}
@@ -224,51 +294,4 @@ jQuery(function($) {
 		</table>
 		<?php endif ?>
 	</div>
-</div>
-
-<div class="row-fluid">
-	<h3><?php echo Yii::t('YcmModule.ycm','Top Pages'); ?></h3>
-	<?php if (count($pages->rows)>0): ?>
-		<table class="table table-striped">
-			<thead>
-			<tr>
-				<th>#</th>
-				<th><?php echo Yii::t('YcmModule.ycm','Page'); ?></th>
-				<th><?php echo Yii::t('YcmModule.ycm','Pageviews'); ?></th>
-				<th><?php echo Yii::t('YcmModule.ycm','Unique Pageviews'); ?></th>
-				<th><?php echo Yii::t('YcmModule.ycm','Avg. Time on Page'); ?></th>
-			</tr>
-			</thead>
-			<tbody>
-			<?php
-			$i=0;
-			$total1=$pages->totalsForAllResults['ga:pageviews'];
-			$total2=$pages->totalsForAllResults['ga:uniquePageviews'];
-			foreach ($pages->rows as $item) {
-				$percentage1=number_format(round(($item[3]/$total1)*100,2),2);
-				$percentage2=number_format(round(($item[4]/$total2)*100,2),2);
-				$value1=number_format($item[3]);
-				$value2=number_format($item[4]);
-				$hostname=$item[0];
-				$path=$item[1];
-				$time=date('H:i:s',$item[5]);
-				$url='http://'.$hostname.$path;
-				if (strpos($path,$hostname)===0) {
-					$url='http://'.$path;
-				}
-				$i++;
-				echo "
-				<tr>
-					<td>$i</td>
-					<td><a href=\"$url\" title=\"{$item[2]}\" target=\"_blank\">$path</a></td>
-					<td><strong>$value1</strong> ($percentage1%)</td>
-					<td><strong>$value2</strong> ($percentage2%)</td>
-					<td>$time</td>
-				</tr>
-				";
-			}
-			?>
-			</tbody>
-		</table>
-	<?php endif ?>
 </div>

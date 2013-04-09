@@ -37,6 +37,7 @@ class DefaultController extends AdminController
 				'days'=>$days,
 				'deviceData'=>$stats->deviceData,
 				'visitorData'=>$stats->visitorData,
+				'trafficData'=>$stats->trafficData,
 				'keywords'=>$stats->keywords,
 				'referrers'=>$stats->referrers,
 				'pages'=>$stats->pages,
@@ -44,10 +45,8 @@ class DefaultController extends AdminController
 			));
 		} else {
 			$stats=new Stats();
-			$authUrl=$stats->client->createAuthUrl();
 			$this->render('setup',array(
 				'stats'=>$stats,
-				'authUrl'=>$authUrl,
 			));
 		}
 	}

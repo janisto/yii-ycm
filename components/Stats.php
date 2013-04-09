@@ -227,8 +227,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews',$params);
-		$tmp=$result->rows;
-		foreach($tmp as $item) {
+		foreach($result->rows as $item) {
 			// Add desktop
 			$tmpData[date('Y-m-d',strtotime($item[0]))][]=(int)$item[1];
 		}
@@ -239,8 +238,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews',$params);
-		$tmp=$result->rows;
-		foreach($tmp as $key=>$item) {
+		foreach($result->rows as $key=>$item) {
 			$data=array(
 				date('Y-m-d',strtotime($item[0])),
 				(int)$item[1],
@@ -256,8 +254,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews',$params);
-		$tmp=$result->rows;
-		foreach($tmp as $key=>$item) {
+		foreach($result->rows as $key=>$item) {
 			$data=array(
 				date('Y-m-d',strtotime($item[0])),
 				(int)$item[1],
@@ -297,8 +294,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews,ga:uniquePageviews,ga:visits,ga:visitors,ga:newVisits',$params);
-		$tmp=$result->rows;
-		foreach($tmp as $item) {
+		foreach($result->rows as $item) {
 			$data=(object)array(
 				(string)'date'=>date('Y-m-d',strtotime($item[0])),
 				'a'=>(int)$item[1],
@@ -311,6 +307,49 @@ class Stats extends CComponent
 		}
 
 		return $visitorData;
+	}
+
+	/**
+	 * Get traffic sources data.
+	 * @return array
+	 */
+	public function getTrafficData()
+	{
+		$trafficData=array();
+
+		$params=array(
+			'dimensions'=>'ga:medium',
+			'sort'=>'-ga:visits',
+		);
+		$result=$this->getData('ga:visits',$params);
+		$total=$result->totalsForAllResults['ga:visits'];
+		if ($total>0 && count($result->rows)>0) {
+			foreach ($result->rows as $item) {
+				if ($item[0]=='organic' && $item[1]>0) {
+					$data=(object)array(
+						'label'=>number_format(round(($item[1]/$total)*100,2),2).'% '.Yii::t('YcmModule.ycm','Search'),
+						'value'=>(int)$item[1],
+					);
+					$trafficData[]=$data;
+				}
+				if ($item[0]=='referral' && $item[1]>0) {
+					$data=(object)array(
+						'label'=>number_format(round(($item[1]/$total)*100,2),2).'% '.Yii::t('YcmModule.ycm','Referral'),
+						'value'=>(int)$item[1],
+					);
+					$trafficData[]=$data;
+				}
+				if ($item[0]=='(none)' && $item[1]>0) {
+					$data=(object)array(
+						'label'=>number_format(round(($item[1]/$total)*100,2),2).'% '.Yii::t('YcmModule.ycm','Direct'),
+						'value'=>(int)$item[1],
+					);
+					$trafficData[]=$data;
+				}
+			}
+		}
+
+		return $trafficData;
 	}
 
 	/**
