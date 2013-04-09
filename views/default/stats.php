@@ -181,7 +181,7 @@ jQuery(function($) {
 					<td><?php echo number_format($usage['ga:newVisits']); ?></td>
 				</tr>
 				<tr>
-					<td><?php echo Yii::t('YcmModule.ycm','Pages/Visit'); ?></td>
+					<td><?php echo Yii::t('YcmModule.ycm','Pages / Visit'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
 							echo number_format(round($usage['ga:pageviews']/$usage['ga:visits'],2),2);
