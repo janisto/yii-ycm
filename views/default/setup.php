@@ -39,7 +39,7 @@ Yii::app()->session->open();
 			$data[$key]=$profile['name'];
 		}
 ?>
-		<h4><?php echo Yii::t('YcmModule.ycm','Step 3'); ?></h4>
+		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>3)); ?></h4>
 		<form method="post" class="form-horizontal">
 			<p><?php echo Yii::t('YcmModule.ycm','Select profile.'); ?></p>
 			<p><?php echo CHtml::dropDownList('profile','',$data); ?></p>
@@ -51,7 +51,7 @@ Yii::app()->session->open();
 		$accessToken=Yii::app()->session->get('accessToken',false);
 		$profiles=Yii::app()->session->get('profiles',false);
 ?>
-		<h4><?php echo Yii::t('YcmModule.ycm','Step 4'); ?></h4>
+		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>4)); ?></h4>
 		<p><?php echo Yii::t('YcmModule.ycm','Add Tracking ID, Profile ID and Access Token to the main configuration file.'); ?></p>
 		<pre>
 ...
@@ -85,14 +85,16 @@ Yii::app()->session->open();
 				</div>
 			</div>
 		</form>
+		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>5)); ?></h4>
+		<p><?php echo CHtml::link(Yii::t('YcmModule.ycm','Reload page'),array('/'.$this->module->name.'/default/stats'),array('class'=>'btn btn-primary')); ?></p>
 <?php
 	} else {
 ?>
 	<div class="row-fluid">
-		<h4><?php echo Yii::t('YcmModule.ycm','Step 1'); ?></h4>
+		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>1)); ?></h4>
 		<p><?php echo Yii::t('YcmModule.ycm','Connect with your Google Analytics account.'); ?></p>
 		<p><a class="btn btn-primary" href="#" onclick="auth();"><?php echo Yii::t('YcmModule.ycm','Connect'); ?></a></p>
-		<h4><?php echo Yii::t('YcmModule.ycm','Step 2'); ?></h4>
+		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>2)); ?></h4>
 		<p><?php echo Yii::t('YcmModule.ycm','Paste authorization code here:'); ?></p>
 		<form method="post" class="form-horizontal">
 			<p><input class="span5" type="text" name="code" id="code"></p>
