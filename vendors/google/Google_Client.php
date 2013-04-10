@@ -271,7 +271,7 @@ class Google_Client {
   public function getClientId() {
     return self::$auth->clientId;
   }
-  
+
   /**
    * Set the OAuth 2.0 Client Secret.
    * @param string $clientSecret
@@ -357,6 +357,15 @@ class Google_Client {
   }
 
   /**
+   * Returns the list of scopes set on the client
+   * @return array the list of scopes
+   *
+   */
+  public function getScopes() {
+     return $this->scopes;
+  }
+
+  /**
    * Declare if objects should be returned by the api service classes.
    *
    * @param boolean $useObjects True if objects should be returned by the service classes.
@@ -430,7 +439,7 @@ class Google_ServiceException extends Google_Exception {
     } else {
       parent::__construct($message, $code);
     }
-    
+
     $this->errors = $errors;
   }
 

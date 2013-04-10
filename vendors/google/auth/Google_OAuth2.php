@@ -53,7 +53,7 @@ class Google_OAuth2 extends Google_Auth {
    */
   public function __construct() {
     global $apiConfig;
-    
+
     if (! empty($apiConfig['developer_key'])) {
       $this->developerKey = $apiConfig['developer_key'];
     }
@@ -69,7 +69,7 @@ class Google_OAuth2 extends Google_Auth {
     if (! empty($apiConfig['oauth2_redirect_uri'])) {
       $this->redirectUri = $apiConfig['oauth2_redirect_uri'];
     }
-    
+
     if (! empty($apiConfig['oauth2_access_type'])) {
       $this->accessType = $apiConfig['oauth2_access_type'];
     }
@@ -77,6 +77,7 @@ class Google_OAuth2 extends Google_Auth {
     if (! empty($apiConfig['oauth2_approval_prompt'])) {
       $this->approvalPrompt = $apiConfig['oauth2_approval_prompt'];
     }
+
   }
 
   /**
@@ -117,7 +118,7 @@ class Google_OAuth2 extends Google_Auth {
     $authUrl = $this->createAuthUrl($service['scope']);
     header('Location: ' . $authUrl);
     return true;
-  } 
+  }
 
   /**
    * Create a URL to obtain user authorization.
@@ -133,7 +134,7 @@ class Google_OAuth2 extends Google_Auth {
         'client_id=' . urlencode($this->clientId),
         'scope=' . urlencode($scope),
         'access_type=' . urlencode($this->accessType),
-        'approval_prompt=' . urlencode($this->approvalPrompt)
+        'approval_prompt=' . urlencode($this->approvalPrompt),
     );
 
     if (isset($this->state)) {
