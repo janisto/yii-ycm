@@ -20,22 +20,22 @@ class DefaultController extends AdminController
 		$days=30;
 		$startDate=date('Y-m-d',strtotime("-$days days"));
 		$endDate=date('Y-m-d',strtotime('-1 day'));
-
+		$config=array();
+		if (!empty($this->module->analytics)
+			&& isset($this->module->analytics['clientId'])
+			&& isset($this->module->analytics['clientSecret'])) {
+			$config['clientId']=$this->module->analytics['clientId'];
+			$config['clientSecret']=$this->module->analytics['clientSecret'];
+		}
 		if (!empty($this->module->analytics)
 			&& isset($this->module->analytics['trackingId'])
 			&& isset($this->module->analytics['profileId'])
 			&& isset($this->module->analytics['accessToken'])) {
-			$config=array(
-				'trackingId'=>$this->module->analytics['trackingId'],
-				'profileId'=>$this->module->analytics['profileId'],
-				'accessToken'=>$this->module->analytics['accessToken'],
-				'startDate'=>$startDate,
-				'endDate'=>$endDate,
-			);
-			if (isset($this->module->analytics['clientId']) && isset($this->module->analytics['clientSecret'])) {
-				$config['clientId']=$this->module->analytics['clientId'];
-				$config['clientSecret']=$this->module->analytics['clientSecret'];
-			}
+			$config['trackingId']=$this->module->analytics['trackingId'];
+			$config['profileId']=$this->module->analytics['profileId'];
+			$config['accessToken']=$this->module->analytics['accessToken'];
+			$config['startDate']=$startDate;
+			$config['endDate']=$endDate;
 			$stats=new Stats($config);
 			$this->render('stats',array(
 				'days'=>$days,
@@ -48,7 +48,7 @@ class DefaultController extends AdminController
 				'usage'=>$stats->usage,
 			));
 		} else {
-			$stats=new Stats();
+			$stats=new Stats($config);
 			$this->render('setup',array(
 				'stats'=>$stats,
 			));
