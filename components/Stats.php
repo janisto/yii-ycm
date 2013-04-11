@@ -194,13 +194,29 @@ class Stats extends CComponent
 	protected function getData($metric,$params=array())
 	{
 		try {
-			return $this->analytics->data_ga->get(
-				'ga:'.$this->profileId,
-				$this->startDate,
-				$this->endDate,
-				$metric,
-				$params
-			);
+			if (Yii::app()->cache) {
+				$cacheID='ycm-'.md5($this->profileId.$this->startDate.$this->endDate.$metric.implode(',', $params));
+				$data=Yii::app()->cache->get($cacheID);
+				if ($data===false) {
+					$data=$this->analytics->data_ga->get(
+						'ga:'.$this->profileId,
+						$this->startDate,
+						$this->endDate,
+						$metric,
+						$params
+					);
+					Yii::app()->cache->set($cacheID,$data,3600);
+				}
+				return $data;
+			} else {
+				return $this->analytics->data_ga->get(
+					'ga:'.$this->profileId,
+					$this->startDate,
+					$this->endDate,
+					$metric,
+					$params
+				);
+			}
 		} catch (exception $e){ // Google_ServiceException doesn't cover all Exceptions.
 			throw new CHttpException(500,Yii::t(
 				'YcmModule.ycm',
