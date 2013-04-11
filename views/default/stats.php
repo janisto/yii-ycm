@@ -41,11 +41,28 @@ if ($lang!='en' && $lang!='en-US') {
 }
 $cs->registerScript('ycm-morris',"
 jQuery(function($) {
+	formatNumber = function(num) {
+		var absnum, intnum, ret, strabsnum;
+		if (num != null) {
+			ret = num < 0 ? '-' : '';
+			absnum = Math.abs(num);
+			intnum = Math.floor(absnum).toFixed(0);
+			ret += intnum.replace(/(?=(?:\d{3})+$)(?!^)/g, '".Yii::app()->locale->getNumberSymbol('group')."');
+			strabsnum = absnum.toString();
+			if (strabsnum.length > intnum.length) {
+				ret += strabsnum.slice(intnum.length);
+			}
+			return ret;
+		} else {
+			return '-';
+		}
+	};
 	Morris.Line({
 		element: 'visitorData',
 		hideHover: 'auto',
 		lineColors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
 		xLabelFormat: function (x) { return $.datepicker.formatDate('M d', new Date(x)); },
+		yLabelFormat: function (y) { return formatNumber(y); },
 		dateFormat: function (x) { return $.datepicker.formatDate('DD, MM d, yy', new Date(x)); },
 		data: ".CJSON::encode($visitorData).",
 		xkey: 'date',
@@ -63,6 +80,7 @@ jQuery(function($) {
 		hideHover: 'auto',
 		lineColors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
 		xLabelFormat: function (x) { return $.datepicker.formatDate('M d', new Date(x)); },
+		yLabelFormat: function (y) { return formatNumber(y); },
 		dateFormat: function (x) { return $.datepicker.formatDate('DD, MM d, yy', new Date(x)); },
 		data: ".CJSON::encode($deviceData).",
 		xkey: 'date',
@@ -76,7 +94,7 @@ jQuery(function($) {
 	Morris.Donut({
 		element: 'trafficData',
 		colors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
-		formatter: function (y,data) { return Morris.commas(y)+' ".Yii::t('YcmModule.ycm','Visits')."' },
+		formatter: function (y,data) { return formatNumber(y)+' ".Yii::t('YcmModule.ycm','Visits')."' },
 		data: ".CJSON::encode($trafficData)."
 	});
 });
@@ -115,10 +133,10 @@ jQuery(function($) {
 				$total1=$pages->totalsForAllResults['ga:pageviews'];
 				$total2=$pages->totalsForAllResults['ga:uniquePageviews'];
 				foreach ($pages->rows as $item) {
-					$percentage1=number_format(round(($item[3]/$total1)*100,2),2);
-					$percentage2=number_format(round(($item[4]/$total2)*100,2),2);
-					$value1=number_format($item[3]);
-					$value2=number_format($item[4]);
+					$percentage1=Yii::app()->numberFormatter->formatPercentage($item[3]/$total1);
+					$percentage2=Yii::app()->numberFormatter->formatPercentage($item[4]/$total2);
+					$value1=Yii::app()->numberFormatter->formatDecimal($item[3]);
+					$value2=Yii::app()->numberFormatter->formatDecimal($item[4]);
 					$hostname=$item[0];
 					$path=$item[1];
 					$time=date('H:i:s',$item[5]);
@@ -130,12 +148,12 @@ jQuery(function($) {
 					echo "
 					<tr>
 						<td>$i</td>
-						<td><a href=\"$url\" title=\"{$item[2]}\" target=\"_blank\">$path</a></td>
-						<td><strong>$value1</strong> ($percentage1%)</td>
-						<td><strong>$value2</strong> ($percentage2%)</td>
+						<td><a href='$url' title='{$item[2]}' target='_blank'>$path</a></td>
+						<td><strong>$value1</strong> ($percentage1)</td>
+						<td><strong>$value2</strong> ($percentage2)</td>
 						<td>$time</td>
 					</tr>
-				";
+					";
 				}
 				?>
 				</tbody>
@@ -162,31 +180,31 @@ jQuery(function($) {
 			<tbody>
 				<tr>
 					<td><?php echo Yii::t('YcmModule.ycm','Pageviews'); ?></td>
-					<td><?php echo number_format($usage['ga:pageviews']); ?></td>
+					<td><?php echo Yii::app()->numberFormatter->formatDecimal($usage['ga:pageviews']); ?></td>
 				</tr>
 				<tr>
 					<td><?php echo Yii::t('YcmModule.ycm','Unique Pageviews'); ?></td>
-					<td><?php echo number_format($usage['ga:uniquePageviews']); ?></td>
+					<td><?php echo Yii::app()->numberFormatter->formatDecimal($usage['ga:uniquePageviews']); ?></td>
 				</tr>
 				<tr>
 					<td><?php echo Yii::t('YcmModule.ycm','Visits'); ?></td>
-					<td><?php echo number_format($usage['ga:visits']); ?></td>
+					<td><?php echo Yii::app()->numberFormatter->formatDecimal($usage['ga:visits']); ?></td>
 				</tr>
 				<tr>
 					<td><?php echo Yii::t('YcmModule.ycm','Unique Visitors'); ?></td>
-					<td><?php echo number_format($usage['ga:visitors']); ?></td>
+					<td><?php echo Yii::app()->numberFormatter->formatDecimal($usage['ga:visitors']); ?></td>
 				</tr>
 				<tr>
 					<td><?php echo Yii::t('YcmModule.ycm','New Visitors'); ?></td>
-					<td><?php echo number_format($usage['ga:newVisits']); ?></td>
+					<td><?php echo Yii::app()->numberFormatter->formatDecimal($usage['ga:newVisits']); ?></td>
 				</tr>
 				<tr>
 					<td><?php echo Yii::t('YcmModule.ycm','Pages / Visit'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo number_format(round($usage['ga:pageviews']/$usage['ga:visits'],2),2);
+							echo Yii::app()->numberFormatter->formatDecimal($usage['ga:pageviews']/$usage['ga:visits']);
 						} else {
-							echo '0.00';
+							echo Yii::app()->numberFormatter->formatDecimal(0);
 						}
 						?></td>
 				</tr>
@@ -194,9 +212,9 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','New Visits'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo number_format(round(($usage['ga:newVisits']/$usage['ga:visits'])*100,2),2).'%';
+							echo Yii::app()->numberFormatter->formatPercentage($usage['ga:newVisits']/$usage['ga:visits']);
 						} else {
-							echo '0.00%';
+							echo Yii::app()->numberFormatter->formatPercentage(0);
 						}
 						?></td>
 				</tr>
@@ -204,9 +222,9 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Bounce Rate'); ?></td>
 					<td><?php
 						if ($usage['ga:entrances']>0) {
-							echo number_format(round(($usage['ga:bounces']/$usage['ga:entrances'])*100,2),2).'%';
+							echo Yii::app()->numberFormatter->formatPercentage($usage['ga:bounces']/$usage['ga:entrances']);
 						} else {
-							echo '0.00%';
+							echo Yii::app()->numberFormatter->formatPercentage(0);
 						}
 						?></td>
 				</tr>
@@ -250,7 +268,7 @@ jQuery(function($) {
 			$i=0;
 			foreach ($referrers as $item) {
 				$i++;
-				$value=number_format($item[1]);
+				$value=Yii::app()->numberFormatter->formatDecimal($item[1]);
 				echo "
 				<tr>
 					<td>$i</td>
@@ -280,7 +298,7 @@ jQuery(function($) {
 			$i=0;
 			foreach ($keywords as $item) {
 				$i++;
-				$value=number_format($item[1]);
+				$value=Yii::app()->numberFormatter->formatDecimal($item[1]);
 				echo "
 				<tr>
 					<td>$i</td>

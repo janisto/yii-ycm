@@ -95,8 +95,8 @@ Yii::app()->session->open();
 		<p><?php echo Yii::t('YcmModule.ycm','Connect with your Google Analytics account.'); ?></p>
 		<p><a class="btn btn-primary" href="#" onclick="auth();"><?php echo Yii::t('YcmModule.ycm','Connect'); ?></a></p>
 		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>2)); ?></h4>
-		<p><?php echo Yii::t('YcmModule.ycm','Paste authorization code here:'); ?></p>
 		<form method="post" class="form-horizontal">
+			<label for="code"><?php echo Yii::t('YcmModule.ycm','Paste authorization code here:'); ?></label>
 			<p><input class="span5" type="text" name="code" id="code"></p>
 			<p><button type="submit" class="btn"><?php echo Yii::t('YcmModule.ycm','Next'); ?></button></p>
 		</form>

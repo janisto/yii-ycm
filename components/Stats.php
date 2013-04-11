@@ -343,21 +343,21 @@ class Stats extends CComponent
 			foreach ($result->rows as $item) {
 				if ($item[0]=='organic' && $item[1]>0) {
 					$data=(object)array(
-						'label'=>number_format(round(($item[1]/$total)*100,2),2).'% '.Yii::t('YcmModule.ycm','Search'),
+						'label'=>Yii::t('YcmModule.ycm','Search {percentage}',array('{percentage}'=>Yii::app()->numberFormatter->formatPercentage($item[1]/$total))),
 						'value'=>(int)$item[1],
 					);
 					$trafficData[]=$data;
 				}
 				if ($item[0]=='referral' && $item[1]>0) {
 					$data=(object)array(
-						'label'=>number_format(round(($item[1]/$total)*100,2),2).'% '.Yii::t('YcmModule.ycm','Referral'),
+						'label'=>Yii::t('YcmModule.ycm','Referral {percentage}',array('{percentage}'=>Yii::app()->numberFormatter->formatPercentage($item[1]/$total))),
 						'value'=>(int)$item[1],
 					);
 					$trafficData[]=$data;
 				}
 				if ($item[0]=='(none)' && $item[1]>0) {
 					$data=(object)array(
-						'label'=>number_format(round(($item[1]/$total)*100,2),2).'% '.Yii::t('YcmModule.ycm','Direct'),
+						'label'=>Yii::t('YcmModule.ycm','Direct {percentage}',array('{percentage}'=>Yii::app()->numberFormatter->formatPercentage($item[1]/$total))),
 						'value'=>(int)$item[1],
 					);
 					$trafficData[]=$data;
