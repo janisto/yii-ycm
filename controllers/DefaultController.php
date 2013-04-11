@@ -32,6 +32,10 @@ class DefaultController extends AdminController
 				'startDate'=>$startDate,
 				'endDate'=>$endDate,
 			);
+			if (isset($this->module->analytics['clientId']) && isset($this->module->analytics['clientSecret'])) {
+				$config['clientId']=$this->module->analytics['clientId'];
+				$config['clientSecret']=$this->module->analytics['clientSecret'];
+			}
 			$stats=new Stats($config);
 			$this->render('stats',array(
 				'days'=>$days,
