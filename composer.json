@@ -1,0 +1,22 @@
+{
+    "name": "janisto/yii-ycm",
+    "description": "YCM - Yii Content Management module",
+    "keywords": ["yii", "admin", "administration", "module", "extension", "analytics"],
+    "homepage": "http://www.yiiframework.com/extension/ycm/",
+    "type": "yii-extension",
+    "license": "public domain",
+    "authors": [
+        {
+            "name": "Jani Mikkonen",
+            "email": "janisto@php.net"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/janisto/yii-ycm/issues?state=open",
+        "forum": "http://www.yiiframework.com/forum/index.php/topic/37136-module-ycm-yii-content-management-module/",
+        "source": "https://github.com/janisto/yii-ycm"
+    },
+    "require": {
+        "php": ">=5.1.0"
+    }
+}
