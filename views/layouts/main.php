@@ -18,7 +18,7 @@ $cs->registerCssFile($baseUrl.'/css/styles.css');
 </head>
 <body>
 <?php
-$this->widget('bootstrap.widgets.TbNavbar', array(
+$this->widget('bootstrap.widgets.TbNavbar',array(
 	'type'=>'inverse', // null or 'inverse'
 	'brand'=>Yii::t('YcmModule.ycm','Administration'),
 	'brandUrl'=>Yii::app()->createUrl('/'.$this->module->name),
@@ -65,7 +65,7 @@ $this->widget('bootstrap.widgets.TbNavbar', array(
 <?php endif?>
 
 <div class="container-fluid">
-	<?php $this->widget('bootstrap.widgets.TbAlert', array(
+	<?php $this->widget('bootstrap.widgets.TbAlert',array(
 		'block'=>true,
 		'fade'=>true,
 		'closeText'=>'&times;',

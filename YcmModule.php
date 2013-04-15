@@ -114,19 +114,19 @@ class YcmModule extends CWebModule
 		$models=$this->registerModels;
 
 		if (!empty($models)) {
-			foreach($models as $model) {
+			foreach ($models as $model) {
 				Yii::import($model);
 				if (substr($model, -1)=='*') {
 					// Get a list of all models inside a directory. Example: 'application.models.*'
 					$files=CFileHelper::findFiles(Yii::getPathOfAlias($model),array('fileTypes'=>array('php')));
 					if ($files) {
-						foreach($files as $file) {
-							$modelName=str_replace('.php','',substr(strrchr($file,DIRECTORY_SEPARATOR), 1));
+						foreach ($files as $file) {
+							$modelName=str_replace('.php','',substr(strrchr($file,DIRECTORY_SEPARATOR),1));
 							$this->addModel($modelName);
 						}
 					}
 				} else {
-					$modelName=substr(strrchr($model, "."), 1);
+					$modelName=substr(strrchr($model, "."),1);
 					$this->addModel($modelName);
 				}
 			}
@@ -414,7 +414,7 @@ class YcmModule extends CWebModule
 				if (!$model->isNewRecord && !empty($model->$attribute)) {
 					ob_start();
 					echo '<p>';
-					$this->controller->widget('bootstrap.widgets.TbButton', array(
+					$this->controller->widget('bootstrap.widgets.TbButton',array(
 						'label'=>Yii::t('YcmModule.ycm','Download'),
 						'type'=>'',
 						'url'=>$model->getFileUrl($attribute),
@@ -440,7 +440,7 @@ class YcmModule extends CWebModule
 					echo '<div class="modal-body">'.$image.'</div>';
 					$this->controller->endWidget();
 					echo '<p>';
-					$this->controller->widget('bootstrap.widgets.TbButton', array(
+					$this->controller->widget('bootstrap.widgets.TbButton',array(
 						'label'=>Yii::t('YcmModule.ycm','Preview'),
 						'type'=>'',
 						'htmlOptions'=>array(
@@ -517,7 +517,7 @@ class YcmModule extends CWebModule
 
 		$data=array();
 		if (!empty($attributeWidgets)) {
-			foreach($attributeWidgets as $item) {
+			foreach ($attributeWidgets as $item) {
 				if (isset($item[0]) && isset($item[1])) {
 					$data[$item[0]]=$item[1];
 					$data[$item[0].'Options']=$item;
@@ -679,7 +679,7 @@ class YcmModule extends CWebModule
 	 */
 	public function getAssetsUrl()
 	{
-		if ($this->_assetsUrl === null) {
+		if ($this->_assetsUrl===null) {
 			$this->_assetsUrl=Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias($this->name.'.assets'));
 		}
 		return $this->_assetsUrl;

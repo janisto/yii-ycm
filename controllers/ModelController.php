@@ -5,7 +5,7 @@ class ModelController extends AdminController
 	/**
 	 * @var string Default action name
 	 */
-	public $defaultAction = 'list';
+	public $defaultAction='list';
 
 	/**
 	 * Redactor image upload.
@@ -51,7 +51,7 @@ class ModelController extends AdminController
 				))));
 			}
 			$attributeUrl=$this->module->getAttributeUrl($name,$attribute,$fileName);
-			$data = array(
+			$data=array(
 				'filelink'=>$attributeUrl,
 			);
 			echo CJSON::encode($data);
@@ -78,7 +78,7 @@ class ModelController extends AdminController
 		$files=CFileHelper::findFiles($attributePath,array('fileTypes'=>array('gif','png','jpg','jpeg')));
 		$data=array();
 		if ($files) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				$fileUrl=$this->module->getAttributeUrl($name,$attribute,basename($file));
 				$data[]=array(
 					'thumb'=>$fileUrl,
@@ -105,7 +105,7 @@ class ModelController extends AdminController
 		if (isset($_GET[get_class($model)])){
 			// Do not set unsafe attributes
 			$params=$_GET[get_class($model)];
-			foreach($params as $key => $val) {
+			foreach ($params as $key=>$val) {
 				if (!$model->isAttributeSafe($key)){
 					unset($params[$key]);
 				}
@@ -144,7 +144,7 @@ class ModelController extends AdminController
 					'viewButtonUrl'=>$urlPrefix.'view",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
 					'viewButtonOptions'=>array(
 						'style'=>'display:none;',
-					 ),
+					),
 				),
 			),
 		);
@@ -177,7 +177,7 @@ class ModelController extends AdminController
 			$paths=array();
 			$model->attributes=$_POST[$name];
 
-			foreach($model->tableSchema->columns as $column) {
+			foreach ($model->tableSchema->columns as $column) {
 				$attribute=$column->name;
 				$widget=$this->module->getAttributeWidget($model,$attribute);
 				if ($widget=='file' || $widget=='image') {
@@ -212,7 +212,7 @@ class ModelController extends AdminController
 				Yii::app()->user->setFlash('success',Yii::t('YcmModule.ycm','Changes saved.'));
 				$this->redirectUser($name,$model->primaryKey);
 			} else if (count($paths)!=0) {
-				foreach($paths as $path) {
+				foreach ($paths as $path) {
 					if (file_exists($path)) {
 						@unlink($path); // Save failed - delete files.
 					}
@@ -251,7 +251,7 @@ class ModelController extends AdminController
 			$deleteOld=array();
 
 			// store old files to array
-			foreach($model->tableSchema->columns as $column) {
+			foreach ($model->tableSchema->columns as $column) {
 				$attribute=$column->name;
 				$widget=$this->module->getAttributeWidget($model,$attribute);
 				if ($widget=='file' || $widget=='image') {
@@ -266,7 +266,7 @@ class ModelController extends AdminController
 			// set attributes from POST
 			$model->attributes=$_POST[$name];
 
-			foreach($model->tableSchema->columns as $column) {
+			foreach ($model->tableSchema->columns as $column) {
 				$attribute=$column->name;
 				$widget=$this->module->getAttributeWidget($model,$attribute);
 				if ($widget=='file' || $widget=='image') { // file or image
@@ -300,7 +300,7 @@ class ModelController extends AdminController
 
 			if ($model->save()) {
 				if (count($deleteOld)!=0) {
-					foreach($deleteOld as $old) {
+					foreach ($deleteOld as $old) {
 						if (isset($oldPaths[$old]) && file_exists($oldPaths[$old])) {
 							@unlink($oldPaths[$old]);
 						}
@@ -309,7 +309,7 @@ class ModelController extends AdminController
 				Yii::app()->user->setFlash('success',Yii::t('YcmModule.ycm','Changes saved.'));
 				$this->redirectUser($name,$model->primaryKey);
 			} else if (count($paths)!=0) {
-				foreach($paths as $path) {
+				foreach ($paths as $path) {
 					if (file_exists($path)) {
 						@unlink($path); // Save failed - delete files.
 					}
@@ -351,7 +351,7 @@ class ModelController extends AdminController
 			$model->delete();
 
 			// delete files
-			foreach($model->tableSchema->columns as $column) {
+			foreach ($model->tableSchema->columns as $column) {
 				$attribute=$column->name;
 				$widget=$this->module->getAttributeWidget($model,$attribute);
 				if ($widget=='file' || $widget=='image') { // file or image
@@ -407,7 +407,7 @@ class ModelController extends AdminController
 		$header=array();
 		$select='';
 
-		foreach($model->tableSchema->columns as $column) {
+		foreach ($model->tableSchema->columns as $column) {
 			// skip primary key?
 			//if ($column->isPrimaryKey===true) continue;
 
@@ -429,9 +429,9 @@ class ModelController extends AdminController
 		fputcsv($fp,$header,$delimiter,$enclosure);
 
 		// content lines
-		foreach($provider as $row) {
+		foreach ($provider as $row) {
 			$retVal=array();
-			foreach($row as $item) {
+			foreach ($row as $item) {
 				if ($item==0 || !empty($item)) {
 					// no new lines in CSV format.
 					$retVal[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($item));
@@ -461,10 +461,10 @@ class ModelController extends AdminController
 		$memoryLimit=5*1024*1024;
 		$delimiter="\t"; // UTF-16LE needs "\t"
 		$enclosure='"';
-		$header = array();
-		$select = '';
+		$header=array();
+		$select='';
 
-		foreach($model->tableSchema->columns as $column) {
+		foreach ($model->tableSchema->columns as $column) {
 			// skip primary key?
 			//if ($column->isPrimaryKey===true) continue;
 
@@ -486,9 +486,9 @@ class ModelController extends AdminController
 		fputcsv($fp,$header,$delimiter,$enclosure);
 
 		// content lines
-		foreach($provider as $row) {
+		foreach ($provider as $row) {
 			$retVal=array();
-			foreach($row as $item) {
+			foreach ($row as $item) {
 				if ($item==0 || !empty($item)) {
 					// no new lines in CSV format.
 					$retVal[]=(string)str_replace(array("\r","\r\n","\n"),'',trim($item));
@@ -530,7 +530,7 @@ class ModelController extends AdminController
 		$header='<tr>';
 		$select='';
 
-		foreach($model->tableSchema->columns as $column) {
+		foreach ($model->tableSchema->columns as $column) {
 			// skip primary key?
 			//if ($column->isPrimaryKey===true) continue;
 
@@ -553,9 +553,9 @@ class ModelController extends AdminController
 		fwrite($fp,$header);
 
 		// content lines
-		foreach($provider as $row) {
+		foreach ($provider as $row) {
 			$retVal='<tr>';
-			foreach($row as $item) {
+			foreach ($row as $item) {
 				if ($item==0 || !empty($item)) {
 					$retVal.='<td>'.(string)trim($item).'</td>';
 				} else {

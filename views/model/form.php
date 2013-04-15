@@ -6,8 +6,8 @@
 
 $this->pageTitle=$title;
 
-$attributes = array();
-foreach($model->attributeLabels() as $attribute => $label) {
+$attributes=array();
+foreach ($model->attributeLabels() as $attribute=>$label) {
 	if (isset($model->tableSchema->columns[$attribute]) && $model->tableSchema->columns[$attribute]->isPrimaryKey===true) {
 		continue;
 	}
@@ -26,7 +26,7 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 			'htmlOptions'=>array('enctype'=>'multipart/form-data'),
 		));
 		echo $form->errorSummary($model);
-		foreach($attributes as $attribute) {
+		foreach ($attributes as $attribute) {
 			$this->module->createWidget($form,$model,$attribute);
 		}
 		?>
@@ -51,7 +51,7 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 				),
 			);
 			if (!$model->isNewRecord) {
-				array_push($buttons, array(
+				array_push($buttons,array(
 					'buttonType'=>'link',
 					'type'=>'danger',
 					'url'=>'#',
@@ -66,7 +66,7 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 					)
 				));
 			}
-			$this->widget('bootstrap.widgets.TbButtonGroup', array(
+			$this->widget('bootstrap.widgets.TbButtonGroup',array(
 				'type'=>'',
 				'buttons'=>$buttons,
 			));

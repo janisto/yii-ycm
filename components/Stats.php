@@ -16,8 +16,8 @@
  * Step 3 (optional):
  * Add Client ID and Client secret to the main configuration file:
  *	...
- *  'ycm'=>array(
- * 		...
+ *	'ycm'=>array(
+ *		...
  *		'analytics'=>array(
  *			'clientId'=>'YOUR_CLIENT_ID',
  *			'clientSecret'=>'YOUR_CLIENT_SECRET',
@@ -33,8 +33,8 @@
  * Step 5:
  * Add Tracking ID, Profile ID and Access Token to the main configuration file:
  *	...
- *  'ycm'=>array(
- * 		...
+ *	'ycm'=>array(
+ *		...
  *		'analytics'=>array(
  *			//'clientId'=>'YOUR_CLIENT_ID', // optional
  *			//'clientSecret'=>'YOUR_CLIENT_SECRET', // optional
@@ -102,8 +102,6 @@ class Stats extends CComponent
 	 */
 	public function authenticate($authCode=null) {
 		try {
-			//$test=$this->client->isAccessTokenExpired();
-			//var_dump($test);
 			$accessToken=$this->client->authenticate($authCode);
 			return $accessToken;
 		} catch (Exception $e) {
@@ -195,7 +193,7 @@ class Stats extends CComponent
 	{
 		try {
 			if (Yii::app()->cache) {
-				$cacheID='ycm-'.md5($this->profileId.$this->startDate.$this->endDate.$metric.implode(',', $params));
+				$cacheID='ycm-'.md5($this->profileId.$this->startDate.$this->endDate.$metric.implode(',',$params));
 				$data=Yii::app()->cache->get($cacheID);
 				if ($data===false) {
 					$data=$this->analytics->data_ga->get(
@@ -243,7 +241,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews',$params);
-		foreach($result->rows as $item) {
+		foreach ($result->rows as $item) {
 			// Add desktop
 			$tmpData[date('Y-m-d',strtotime($item[0]))][]=(int)$item[1];
 		}
@@ -254,7 +252,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews',$params);
-		foreach($result->rows as $key=>$item) {
+		foreach ($result->rows as $key=>$item) {
 			$data=array(
 				date('Y-m-d',strtotime($item[0])),
 				(int)$item[1],
@@ -270,7 +268,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews',$params);
-		foreach($result->rows as $key=>$item) {
+		foreach ($result->rows as $key=>$item) {
 			$data=array(
 				date('Y-m-d',strtotime($item[0])),
 				(int)$item[1],
@@ -278,12 +276,12 @@ class Stats extends CComponent
 			$mobile[$key]=$data;
 		}
 
-		foreach($mobile as $key=>$item) {
+		foreach ($mobile as $key=>$item) {
 			// Add smartphone
 			$tmpData[$item[0]][]=(int)$item[1]-(int)$tablet[$key][1];
 		}
 
-		foreach($tmpData as $key=>$item) {
+		foreach ($tmpData as $key=>$item) {
 			// Format array for JSON
 			$data=(object)array(
 				'date'=>$key,
@@ -310,7 +308,7 @@ class Stats extends CComponent
 			'sort'=>'ga:date',
 		);
 		$result=$this->getData('ga:pageviews,ga:uniquePageviews,ga:visits,ga:visitors,ga:newVisits',$params);
-		foreach($result->rows as $item) {
+		foreach ($result->rows as $item) {
 			$data=(object)array(
 				(string)'date'=>date('Y-m-d',strtotime($item[0])),
 				'a'=>(int)$item[1],

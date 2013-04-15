@@ -6,7 +6,7 @@ $this->pageTitle=Yii::t('YcmModule.ycm','Administration');
 ?>
 
 <?php $this->beginWidget('bootstrap.widgets.TbHeroUnit'); ?>
-	<?php foreach($models as $model): ?>
+	<?php foreach ($models as $model): ?>
 		<div class="btn-toolbar">
 			<?php
 			$download=false;
@@ -32,7 +32,7 @@ $this->pageTitle=Yii::t('YcmModule.ycm','Administration');
 					'url'=>$this->createUrl('model/csv',array('name'=>$model)),
 				));
 			}
-			$this->widget('bootstrap.widgets.TbButtonGroup', array(
+			$this->widget('bootstrap.widgets.TbButtonGroup',array(
 				'type'=>'', // '', 'primary', 'info', 'success', 'warning', 'danger' or 'inverse'
 				'buttons'=>array(
 					array(
@@ -51,7 +51,7 @@ $this->pageTitle=Yii::t('YcmModule.ycm','Administration');
 				),
 			));
 			if ($download) {
-				$this->widget('bootstrap.widgets.TbButtonGroup', array(
+				$this->widget('bootstrap.widgets.TbButtonGroup',array(
 					'type'=>'',
 					'buttons'=>array(
 						array('label'=>Yii::t('YcmModule.ycm',

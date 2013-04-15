@@ -14,9 +14,9 @@ $baseUrl=$this->module->assetsUrl;
 $cs->registerScript('ycm-setup',"
 function auth() {
 	var D=640,A=480,C=screen.height,B=screen.width,H=Math.round((B/2)-(D/2)),G=0;
-	if(C>A){G=Math.round((C/2)-(A/2))}
+	if (C>A) { G=Math.round((C/2)-(A/2)) }
 	authWin=window.open('". $authUrl ."','auth','left='+H+',top='+G+',width='+D+',height='+A+',personalbar=0,toolbar=0,scrollbars=1,resizable=1');
-	if (window.focus) {authWin.focus()}
+	if (window.focus) { authWin.focus() }
 	return false;
 }
 ", CClientScript::POS_END);

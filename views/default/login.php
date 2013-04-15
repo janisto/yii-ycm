@@ -8,7 +8,7 @@ $this->breadcrumbs=array(
 	Yii::t('YcmModule.ycm','Login'),
 );
 
-$form = $this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+$form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 	'id'=>'verticalForm',
 	'type'=>'inline',
 	'htmlOptions'=>array('class'=>'well'),

@@ -9,7 +9,7 @@ $this->pageTitle=$title;
 
 <div class="btn-toolbar">
 	<?php
-	$this->widget('bootstrap.widgets.TbButtonGroup', array(
+	$this->widget('bootstrap.widgets.TbButtonGroup',array(
 		'type'=>'',
 		'buttons'=>array(
 			array(
