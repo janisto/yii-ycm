@@ -17,6 +17,7 @@ Thumbs.db
 .project
 .settings
 .tmproj
+.idea
 *.esproj
 nbproject
 
@@ -26,6 +27,3 @@ nbproject
 .CVS
 intermediate
 publish
-.idea
-
-
