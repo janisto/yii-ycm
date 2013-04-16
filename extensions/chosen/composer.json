@@ -1,0 +1,24 @@
+{
+	"name": "janisto/yii-chosen",
+	"description": "Yii Widget for Chosen - Chosen is a JavaScript plugin that makes long, unwieldy select boxes much more user-friendly.",
+	"keywords": ["yii", "chosen", "extension"],
+	"homepage": "https://github.com/janisto/yii-chosen",
+	"type": "yii-extension",
+	"extra": {
+		"installer-name": "chosen"
+	},
+	"license": "public domain",
+	"authors": [
+		{
+			"name": "Jani Mikkonen",
+			"email": "janisto@php.net"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/janisto/yii-chosen/issues?state=open",
+		"source": "https://github.com/janisto/yii-chosen"
+	},
+	"require": {
+		"php": ">=5.1.0"
+	}
+}

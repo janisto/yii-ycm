@@ -4,13 +4,14 @@
  * Chosen widget
  *
  * @author Jani Mikkonen <janisto@php.net>
- * @version 1.1
+ * @version 1.3.0
  * @license public domain (http://unlicense.org)
  * @package extensions.chosen
  * @link http://harvesthq.github.com/chosen/
  */
 
-class EChosenWidget extends CInputWidget {
+class EChosenWidget extends CWidget
+{
 	/**
 	 * Assets package ID.
 	 */

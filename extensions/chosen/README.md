@@ -39,11 +39,20 @@ $this->widget('ext.chosen.EChosenWidget',array(
 Changelog
 ------------------
 
-### v1.1
+### v1.3.0
+
+- Chosen updated to version 0.9.12.
+- Composer support.
+
+### v1.2.0
+
+- Use CWidget instead of CInputWidget.
+
+### v1.1.0
 
 - Chosen updated to version 0.9.10.
 
-### v1.0
+### v1.0.0
 
 - Initial version.
 
