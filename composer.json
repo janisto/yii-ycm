@@ -1,9 +1,12 @@
 {
     "name": "janisto/yii-ycm",
     "description": "YCM - Yii Content Management module",
-    "keywords": ["yii", "admin", "administration", "module", "extension", "analytics"],
+    "keywords": ["yii", "admin", "administration", "module", "analytics"],
     "homepage": "http://www.yiiframework.com/extension/ycm/",
-    "type": "yii-extension",
+    "type": "yii-module",
+	"extra": {
+		"installer-name": "ycm"
+	},
     "license": "public domain",
     "authors": [
         {
