@@ -234,6 +234,7 @@ class ModelController extends AdminController
 			'model'=>$model,
 		));
 	}
+
 	/**
 	 * Update model.
 	 *

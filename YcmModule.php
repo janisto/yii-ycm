@@ -9,7 +9,6 @@
  * @author Jani Mikkonen <janisto@php.net>
  * @license public domain
  */
-
 class YcmModule extends CWebModule
 {
 	private $controller;
