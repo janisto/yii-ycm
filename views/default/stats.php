@@ -94,7 +94,7 @@ jQuery(function($) {
 	Morris.Donut({
 		element: 'trafficData',
 		colors: ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'],
-		formatter: function (y,data) { return formatNumber(y)+' ".Yii::t('YcmModule.ycm','Visits')."' },
+		formatter: function (y,data) { return '".Yii::t('YcmModule.ycm','Visits').": '+formatNumber(y); },
 		data: ".CJSON::encode($trafficData)."
 	});
 });
@@ -229,7 +229,7 @@ jQuery(function($) {
 						?></td>
 				</tr>
 				<tr>
-					<td><?php echo Yii::t('YcmModule.ycm','Avg. Time on Site'); ?></td>
+					<td><?php echo Yii::t('YcmModule.ycm','Avg. Visit Duration'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
 							echo date('H:i:s',round($usage['ga:timeOnSite']/$usage['ga:visits']));
