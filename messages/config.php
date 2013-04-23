@@ -21,5 +21,6 @@ return array(
 		'.git',
 		'.gitignore',
 		'/extensions',
+		'/vendors',
 	),
 );
