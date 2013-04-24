@@ -337,14 +337,20 @@ class Stats extends CComponent
 		);
 		$result=$this->getData('ga:visits',$params);
 		$total=$result->totalsForAllResults['ga:visits'];
+		$searchTraffic=0;
+		$searchType=array(
+			'organic', // Organic search traffic
+			'cpa', // Paid search traffic
+			'cpc', // Paid search traffic
+			'cpm', // Paid search traffic
+			'cpp', // Paid search traffic
+			'cpv', // Paid search traffic
+			'ppc', // Paid search traffic
+		);
 		if ($total>0 && count($result->rows)>0) {
 			foreach ($result->rows as $item) {
-				if ($item[0]=='organic' && $item[1]>0) {
-					$data=(object)array(
-						'label'=>Yii::t('YcmModule.ycm','Search {percentage}',array('{percentage}'=>Yii::app()->numberFormatter->formatPercentage($item[1]/$total))),
-						'value'=>(int)$item[1],
-					);
-					$trafficData[]=$data;
+				if (in_array($item[0],$searchType) && $item[1]>0) {
+					$searchTraffic+=(int)$item[1];
 				}
 				if ($item[0]=='referral' && $item[1]>0) {
 					$data=(object)array(
@@ -360,6 +366,13 @@ class Stats extends CComponent
 					);
 					$trafficData[]=$data;
 				}
+			}
+			if ($searchTraffic>0) {
+				$data=(object)array(
+					'label'=>Yii::t('YcmModule.ycm','Search {percentage}',array('{percentage}'=>Yii::app()->numberFormatter->formatPercentage($searchTraffic/$total))),
+					'value'=>(int)$searchTraffic,
+				);
+				$trafficData[]=$data;
 			}
 		}
 
