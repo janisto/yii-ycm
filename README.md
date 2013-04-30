@@ -8,6 +8,8 @@ YCM - Yii Content Management module
 - [Github Project Page](https://github.com/janisto/yii-ycm/)
 - [Forum topic](http://www.yiiframework.com/forum/index.php/topic/37136-module-ycm-yii-content-management-module/)
 
+See examples for all the options.
+
 Requirements
 ------------------
 
@@ -36,23 +38,38 @@ Installation
 	),
 ~~~
 
+Update
+------------------
+
+- Clear assets folder.
+
 Changelog
 ------------------
 
-### v0.4
+### v0.5.0
 
-- Update yii-chosen to version v1.1.
+- Google Analytics statistics page.
+- Update yii-chosen to version v1.4.0
+- Update Redactor to 8.2.6
+- Composer support.
+- Fix: Better url & path handling.
+- Code cleanup.
+- Update Finnish translation.
+
+### v0.4.0
+
+- Update yii-chosen to version v1.1.0
 - Add first and last to pager.
 - Fix: allow auto login.
 
 
-### v0.3
+### v0.3.0
 
 - Bootstrap typehead support.
 - Localization support and Finnish translation.
 - Fix: loadModel doesn't require PHP 5.3+ anymore.
 
-### v0.2
+### v0.2.0
 
 - Initial version.
 
