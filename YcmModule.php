@@ -508,10 +508,9 @@ class YcmModule extends CWebModule
 			}
 		}
 
+		$attributeWidgets=array();
 		if (method_exists($model,'attributeWidgets')) {
 			$attributeWidgets=$model->attributeWidgets();
-		} else {
-			return null;
 		}
 
 		$data=array();
@@ -561,7 +560,7 @@ class YcmModule extends CWebModule
 		if (isset($this->attributesWidgets->$optionsName)) {
 			return $this->attributesWidgets->$optionsName;
 		} else {
-			return null;
+			return array();
 		}
 	}
 
