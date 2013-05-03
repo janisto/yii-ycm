@@ -377,7 +377,7 @@ class YcmModule extends CWebModule
 					$options=array_merge($options,$attributeOptions);
 				}
 				$this->controller->widget('CAutoComplete',$options);
-				echo '<span class="help-inline">'.Yii::t('YcmModule.ycm','Separate with commas.').'</span>';
+				echo '<span class="help-inline">'.Yii::t('YcmModule.ycm','Separate words with commas.').'</span>';
 				echo $form->error($model,$attribute);
 				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
 					echo '</div></div>';
