@@ -33,7 +33,7 @@ return array (
 	'Connect with your Google Analytics account.' => '使用你的Google分析账户连接',
 	'Could not create folder "{dir}". Make sure "uploads" folder is writable.' => '无法创建文件夹"{dir}",请确保"uploads"文件夹可写.',
 	'Could not create upload folder "{dir}".' => '无法创建上传文件夹"{dir}"',
-	'Could not delete entry "{name}" with an ID "{pk}".' => 'Kohdetta "{name}" ei voitu poistaa ID:llä "{pk}".',
+	'Could not delete entry "{name}" with an ID "{pk}".' => '无法删除ID为"{pk}"的记录"{name}".',
 	'Could not load model "{name}".' => '无法加载模型"{name}"',
 	'Could not save file or file exists: "{file}".' => '无法保存文件"{file}",可能文件已存在.',
 	'Could not upload file.' => '无法上传文件',
