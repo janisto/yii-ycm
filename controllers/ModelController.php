@@ -8,6 +8,29 @@ class ModelController extends AdminController
 	public $defaultAction='list';
 
 	/**
+	 * Suggests tags via AJAX based on the current user input.
+	 *
+	 * @param string $name Model name
+	 * @param string $attr Model attribute
+	 */
+	public function actionSuggestTags($name,$attr)
+	{
+		$attribute=(string)$attr;
+		$model=$this->module->loadModel($name);
+		if (isset($_GET['q']) && ($keyword=trim($_GET['q']))!=='') {
+			$criteria=new CDbCriteria(array(
+				'limit'=>15,
+				'order'=>'count DESC, name',
+			));
+			$criteria->addSearchCondition('name',$keyword);
+			$tags=$model->$attribute->getAllTags($criteria);
+			if (!empty($tags)) {
+				echo implode("\n",$tags);
+			}
+		}
+	}
+
+	/**
 	 * Redactor image upload.
 	 *
 	 * @param string $name Model name
@@ -208,6 +231,15 @@ class ModelController extends AdminController
 				}
 			}
 
+			$behaviors=$model->behaviors();
+			if (!empty($behaviors)) {
+				foreach ($behaviors as $key=>$behavior) {
+					if (substr_count($behavior['class'],'.ETaggableBehavior')>0 && isset($_POST[$key])) {
+						$model->$key->setTags($_POST[$key]);
+					}
+				}
+			}
+
 			if ($model->save()) {
 				Yii::app()->user->setFlash('success',Yii::t('YcmModule.ycm','Changes saved.'));
 				$this->redirectUser($name,$model->primaryKey);
@@ -295,6 +327,15 @@ class ModelController extends AdminController
 						array_push($paths,$path);
 						array_push($deleteOld,$attribute);
 						$model->$attribute=$fileName;
+					}
+				}
+			}
+
+			$behaviors=$model->behaviors();
+			if (!empty($behaviors)) {
+				foreach ($behaviors as $key=>$behavior) {
+					if (substr_count($behavior['class'],'.ETaggableBehavior')>0 && isset($_POST[$key])) {
+						$model->$key->setTags($_POST[$key]);
 					}
 				}
 			}

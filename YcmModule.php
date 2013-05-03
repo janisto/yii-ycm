@@ -352,6 +352,38 @@ class YcmModule extends CWebModule
 				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
 
+			case 'taggable':
+				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
+					echo '<div class="control-group">';
+					echo $form->labelEx($model,$attribute,array('class'=>'control-label'));
+					echo '<div class="controls">';
+				} else {
+					echo $form->labelEx($model,$attribute);
+				}
+				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
+				$options=array(
+					'name'=>$attribute,
+					'value'=>$model->$attribute->toString(),
+					'url'=>Yii::app()->createUrl($this->name.'/model/suggestTags',array(
+						'name'=>get_class($model),
+						'attr'=>$attribute,
+					)),
+					'multiple'=>true,
+					'mustMatch'=>false,
+					'matchCase'=>false,
+					'htmlOptions'=>array('size'=>50,'class'=>'span5'),
+				);
+				if ($attributeOptions) {
+					$options=array_merge($options,$attributeOptions);
+				}
+				$this->controller->widget('CAutoComplete',$options);
+				echo '<span class="help-inline">'.Yii::t('YcmModule.ycm','Separate with commas.').'</span>';
+				echo $form->error($model,$attribute);
+				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
+					echo '</div></div>';
+				}
+				break;
+
 			case 'dropDown':
 				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),array(
 					'empty'=>Yii::t('YcmModule.ycm',
