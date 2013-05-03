@@ -82,6 +82,7 @@ return array (
 	'Save and continue editing' => 'Tallenna ja jatka muokkausta',
 	'Search {percentage}' => 'Haku {percentage}',
 	'Select profile.' => 'Valitse profiili.',
+	'Separate words with commas.' => 'Erottele sanat pilkulla.',
 	'Smartphone Pageviews' => 'Sivun katselut älypuhelimella',
 	'Statistics' => 'Tilastot',
 	'Step {num}' => 'Vaihe {num}',
