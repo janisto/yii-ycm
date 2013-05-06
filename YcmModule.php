@@ -487,6 +487,9 @@ class YcmModule extends CWebModule
 				}
 				break;
 
+			case 'hide':
+				break;
+
 			default:
 				echo $form->textFieldRow($model,$attribute,array('class'=>'span5'));
 				break;
