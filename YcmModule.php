@@ -172,21 +172,20 @@ class YcmModule extends CWebModule
 					echo $form->labelEx($model,$attribute);
 				}
 				echo '<div class="input-prepend"><span class="add-on"><i class="icon-time"></i></span>';
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'model'=>$model,
 					'attribute'=>$attribute,
 					'language'=>$lang,
 					'mode'=>'time',
-					'htmlOptions'=>array('class'=>'size-medium'),
+					'htmlOptions'=>array(
+						'class'=>'size-medium',
+					),
 					'options'=>array(
 						'timeFormat'=>'hh:mm:ss',
 						'showSecond'=>true,
 					),
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.jui.EJuiDateTimePicker',$options);
 				echo '</div>';
 				echo $form->error($model,$attribute);
@@ -204,13 +203,14 @@ class YcmModule extends CWebModule
 					echo $form->labelEx($model,$attribute);
 				}
 				echo '<div class="input-prepend"><span class="add-on"><i class="icon-calendar"></i></span>';
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'model'=>$model,
 					'attribute'=>$attribute,
 					'language'=>$lang,
 					'mode'=>'datetime',
-					'htmlOptions'=>array('class'=>'size-medium'),
+					'htmlOptions'=>array(
+						'class'=>'size-medium',
+					),
 					'options'=>array(
 						'dateFormat'=>'yy-mm-dd',
 						'timeFormat'=>'hh:mm:ss',
@@ -220,9 +220,7 @@ class YcmModule extends CWebModule
 						//'stepSecond'=>'60',
 					),
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.jui.EJuiDateTimePicker',$options);
 				echo '</div>';
 				echo $form->error($model,$attribute);
@@ -240,20 +238,19 @@ class YcmModule extends CWebModule
 					echo $form->labelEx($model,$attribute);
 				}
 				echo '<div class="input-prepend"><span class="add-on"><i class="icon-calendar"></i></span>';
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'model'=>$model,
 					'attribute'=>$attribute,
 					'language'=>$lang,
 					'mode'=>'date',
-					'htmlOptions'=>array('class'=>'size-medium'),
+					'htmlOptions'=>array(
+						'class'=>'size-medium',
+					),
 					'options'=>array(
 						'dateFormat'=>'yy-mm-dd',
 					),
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.jui.EJuiDateTimePicker',$options);
 				echo '</div>';
 				echo $form->error($model,$attribute);
@@ -270,7 +267,6 @@ class YcmModule extends CWebModule
 				} else {
 					echo $form->labelEx($model,$attribute);
 				}
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'model'=>$model,
 					'attribute'=>$attribute,
@@ -283,9 +279,7 @@ class YcmModule extends CWebModule
 						),
 					),
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				if ($this->redactorUpload===true) {
 					$redactorOptions=array(
 						'options'=>array(
@@ -312,42 +306,46 @@ class YcmModule extends CWebModule
 				break;
 
 			case 'textArea':
-				echo $form->textAreaRow($model,$attribute,array('rows'=>5,'cols'=>50,'class'=>'span8'));
+				$options=array(
+					'rows'=>5,
+					'cols'=>50,
+					'class'=>'span8',
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->textAreaRow($model,$attribute,$options);
 				break;
 
 			case 'textField':
-				echo $form->textFieldRow($model,$attribute,array('class'=>'span5'));
+				$options=array(
+					'class'=>'span5',
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->textFieldRow($model,$attribute,$options);
 				break;
 
 			case 'chosen':
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'empty'=>Yii::t('YcmModule.ycm',
 						'Choose {name}',
 						array('{name}'=>$model->getAttributeLabel($attribute))
 					),
-					'class'=>'span5 chzn-select'
+					'class'=>'span5 chzn-select',
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
 				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
 
 			case 'chosenMultiple':
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'data-placeholder'=>Yii::t('YcmModule.ycm',
 						'Choose {name}',
 						array('{name}'=>$model->getAttributeLabel($attribute))
 					),
 					'multiple'=>'multiple',
-					'class'=>'span5 chzn-select'
+					'class'=>'span5 chzn-select',
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
 				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
@@ -360,7 +358,6 @@ class YcmModule extends CWebModule
 				} else {
 					echo $form->labelEx($model,$attribute);
 				}
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'name'=>$attribute,
 					'value'=>$model->$attribute->toString(),
@@ -371,11 +368,12 @@ class YcmModule extends CWebModule
 					'multiple'=>true,
 					'mustMatch'=>false,
 					'matchCase'=>false,
-					'htmlOptions'=>array('size'=>50,'class'=>'span5'),
+					'htmlOptions'=>array(
+						'size'=>50,
+						'class'=>'span5',
+					),
 				);
-				if ($attributeOptions) {
-					$options=array_merge($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget('CAutoComplete',$options);
 				echo '<span class="help-inline">'.Yii::t('YcmModule.ycm','Separate words with commas.').'</span>';
 				echo $form->error($model,$attribute);
@@ -385,13 +383,15 @@ class YcmModule extends CWebModule
 				break;
 
 			case 'dropDown':
-				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),array(
+				$options=array(
 					'empty'=>Yii::t('YcmModule.ycm',
 						'Choose {name}',
 						array('{name}'=>$model->getAttributeLabel($attribute))
 					),
-					'class'=>'span5')
+					'class'=>'span5',
 				);
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->dropDownListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
 
 			case 'typeHead':
@@ -402,11 +402,13 @@ class YcmModule extends CWebModule
 				} else {
 					echo $form->labelEx($model,$attribute);
 				}
-				$attributeOptions=array_slice($this->getAttributeOptions($attribute),2);
 				$options=array(
 					'model'=>$model,
 					'attribute'=>$attribute,
-					'htmlOptions'=>array('class'=>'span5','autocomplete'=>'off'),
+					'htmlOptions'=>array(
+						'class'=>'span5',
+						'autocomplete'=>'off',
+					),
 					'options'=>array(
 						'name'=>'typeahead',
 						'source'=>$this->getAttributeChoices($model,$attribute),
@@ -415,9 +417,7 @@ class YcmModule extends CWebModule
 						}",
 					),
 				);
-				if ($attributeOptions) {
-					$options=array_merge_recursive($options,$attributeOptions);
-				}
+				$options=$this->getAttributeOptions($attribute,$options,true);
 				$this->controller->widget('bootstrap.widgets.TbTypeahead',$options);
 				echo $form->error($model,$attribute);
 				if ($form->type==TbActiveForm::TYPE_HORIZONTAL) {
@@ -426,22 +426,39 @@ class YcmModule extends CWebModule
 				break;
 
 			case 'radioButton':
-				echo $form->radioButtonListRow($model,$attribute,$this->getAttributeChoices($model,$attribute));
+				$options=array();
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->radioButtonListRow($model,$attribute,$this->getAttributeChoices($model,$attribute),$options);
 				break;
 
 			case 'boolean':
-				echo $form->checkboxRow($model,$attribute);
+				$options=array();
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->checkboxRow($model,$attribute,$options);
 				break;
 
 			case 'password':
-				echo $form->passwordFieldRow($model,$attribute,array('class'=>'span5'));
+				$options=array(
+					'class'=>'span5',
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->passwordFieldRow($model,$attribute,$options);
 				break;
 
 			case 'disabled':
-				echo $form->textFieldRow($model,$attribute,array('class'=>'span5','disabled'=>true));
+				$options=array(
+					'class'=>'span5',
+					'disabled'=>true,
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->textFieldRow($model,$attribute,$options);
 				break;
 
 			case 'file':
+				$options=array(
+					'class'=>'span5',
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
 				if (!$model->isNewRecord && !empty($model->$attribute)) {
 					ob_start();
 					echo '<p>';
@@ -452,13 +469,16 @@ class YcmModule extends CWebModule
 					));
 					echo '</p>';
 					$html=ob_get_clean();
-					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5','hint'=>$html));
-				} else {
-					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5'));
+					$options['hint']=$html;
 				}
+				echo $form->fileFieldRow($model,$attribute,$options);
 				break;
 
 			case 'image':
+				$options=array(
+					'class'=>'span5',
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
 				if (!$model->isNewRecord && !empty($model->$attribute)) {
 					$modalName='modal-image-'.$attribute;
 					$image=CHtml::image($model->getFileUrl($attribute),Yii::t('YcmModule.ycm','Image'),array(
@@ -481,17 +501,20 @@ class YcmModule extends CWebModule
 					));
 					echo '</p>';
 					$html=ob_get_clean();
-					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5','hint'=>$html));
-				} else {
-					echo $form->fileFieldRow($model,$attribute,array('class'=>'span5'));
+					$options['hint']=$html;
 				}
+				echo $form->fileFieldRow($model,$attribute,$options);
 				break;
 
 			case 'hide':
 				break;
 
 			default:
-				echo $form->textFieldRow($model,$attribute,array('class'=>'span5'));
+				$options=array(
+					'class'=>'span5',
+				);
+				$options=$this->getAttributeOptions($attribute,$options);
+				echo $form->textFieldRow($model,$attribute,$options);
 				break;
 		}
 	}
@@ -584,18 +607,37 @@ class YcmModule extends CWebModule
 	}
 
 	/**
-	 * Get attributes data.
+	 * Get attribute options.
 	 *
 	 * @param string $attribute Model attribute
-	 * @return null|array
+	 * @param array $options Model attribute form options
+	 * @param bool $recursive Merge option arrays recursively
+	 * @return array
 	 */
-	protected function getAttributeOptions($attribute)
+	protected function getAttributeOptions($attribute,$options=array(),$recursive=false)
 	{
 		$optionsName=(string)$attribute.'Options';
 		if (isset($this->attributesWidgets->$optionsName)) {
-			return $this->attributesWidgets->$optionsName;
+			$attributeOptions=array_slice($this->attributesWidgets->$optionsName,2);
+			if (empty($options)) {
+				return $attributeOptions;
+			} else {
+				if (empty($attributeOptions)) {
+					return $options;
+				} else {
+					if ($recursive===true) {
+						return array_merge_recursive($options,$attributeOptions);
+					} else {
+						return array_merge($options,$attributeOptions);
+					}
+				}
+			}
 		} else {
-			return array();
+			if (empty($options)) {
+				return array();
+			} else {
+				return $options;
+			}
 		}
 	}
 
