@@ -139,7 +139,7 @@ jQuery(function($) {
 					$value2=Yii::app()->numberFormatter->formatDecimal($item[4]);
 					$hostname=$item[0];
 					$path=$item[1];
-					$time=date('H:i:s',$item[5]);
+					$time=gmdate('H:i:s',$item[5]);
 					$url='http://'.$hostname.$path;
 					if (strpos($path,$hostname)===0) {
 						$url='http://'.$path;
@@ -232,7 +232,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Avg. Visit Duration'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo date('H:i:s',round($usage['ga:timeOnSite']/$usage['ga:visits']));
+							echo gmdate('H:i:s',round($usage['ga:timeOnSite']/$usage['ga:visits']));
 						} else {
 							echo '00:00:00';
 						}
@@ -242,7 +242,7 @@ jQuery(function($) {
 					<td><?php echo Yii::t('YcmModule.ycm','Avg. Time on Page'); ?></td>
 					<td><?php
 						if ($usage['ga:visits']>0) {
-							echo date('H:i:s',round($usage['ga:timeOnPage']/($usage['ga:pageviews']-$usage['ga:exits'])));
+							echo gmdate('H:i:s',round($usage['ga:timeOnPage']/($usage['ga:pageviews']-$usage['ga:exits'])));
 						} else {
 							echo '00:00:00';
 						}
