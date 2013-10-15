@@ -3,10 +3,7 @@
 	"description": "YCM - Yii Content Management module",
 	"keywords": ["yii", "admin", "administration", "module", "analytics"],
 	"homepage": "http://www.yiiframework.com/extension/ycm/",
-	"type": "yii-module",
-	"extra": {
-		"installer-name": "ycm"
-	},
+	"type": "library",
 	"license": "public domain",
 	"authors": [
 		{
