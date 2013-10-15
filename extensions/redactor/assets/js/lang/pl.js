@@ -1,11 +1,12 @@
-var RELANG = {};
-RELANG['pl'] = {
+(function ($) {
+$.Redactor.opts.langs['pl'] = {
 	html: 'Źródło',
 	video: 'Wideo',
 	image: 'Obrazek',
 	table: 'Tabela',
 	link: 'Link',
 	link_insert: 'Wstaw link ...',
+	link_edit: 'Edit link',
 	unlink: 'Usuń link',
 	formatting: 'Style',
 	paragraph: 'Zwykły tekst',
@@ -15,6 +16,7 @@ RELANG['pl'] = {
 	header2: 'Nagłówek 2',
 	header3: 'Nagłówek 3',
 	header4: 'Nagłówek 4',
+	header5: 'Nagłówek 5',
 	bold:  'Pogrubiony',
 	italic: 'Pochylony',
 	fontcolor: 'Kolor tekstu',
@@ -65,5 +67,8 @@ RELANG['pl'] = {
     anchor: 'Kotwica',
 	link_new_tab: 'Otwórz link w nowym oknie',
 	underline: 'Pokdreślony',
-	alignment: 'Wyrównanie'
+	alignment: 'Wyrównanie',
+	filename: 'Name (optional)',
+	edit: 'Edit'
 };
+})( jQuery );

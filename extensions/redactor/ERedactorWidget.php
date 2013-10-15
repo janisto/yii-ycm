@@ -4,10 +4,10 @@
  * Redactor widget
  *
  * @author Jani Mikkonen <janisto@php.net>
- * @version 1.0
+ * @version 1.2.0
  * @license public domain (http://unlicense.org)
  * @package extensions.redactor
- * @link http://redactorjs.com
+ * @link http://imperavi.com/redactor/
  */
 
 class ERedactorWidget extends CInputWidget {
@@ -91,7 +91,7 @@ class ERedactorWidget extends CInputWidget {
 		}
 		$cs->registerPackage(self::PACKAGE_ID);
 
-		if(isset($this->options['lang']) && $this->options['lang'] != 'en') {
+		if (isset($this->options['lang']) && $this->options['lang'] != 'en') {
 			$cs->registerScriptFile($this->assetsUrl . '/js/lang/' . $this->options['lang'] . '.js');
 		}
 

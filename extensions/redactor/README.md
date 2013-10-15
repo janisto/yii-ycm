@@ -3,10 +3,11 @@ yii-redactor
 
 Yii Widget for Redactor - Fantastic WYSIWYG editor on jQuery
 
-- [Examples](http://redactorjs.com/examples/)
-- [Documentation](http://redactorjs.com/docs/)
-- [Download Redactor](http://redactorjs.com/download/)
-- [Download languages](http://redactorjs.com/docs/languages/)
+- [Examples](http://imperavi.com/redactor/examples/)
+- [Documentation](http://imperavi.com/redactor/docs/)
+- [Download Redactor](http://imperavi.com/redactor/download/)
+- [Download languages](http://imperavi.com/redactor/docs/languages/)
+- [Github Project Page](https://github.com/janisto/yii-redactor)
 
 Requirements
 ------------------
@@ -72,10 +73,158 @@ $this->widget('ext.redactor.ERedactorWidget',array(
 ));
 ~~~
 
+### Override default settings in config/main.php
+
+~~~
+return array(
+
+	// application components
+	'components'=>array(
+		(...)
+
+		// Defaults to Widgets
+		'widgetFactory' => array(
+			'widgets' => array(
+				'ERedactorWidget' => array(
+					'options'=>array(
+						'lang'=>'fi',
+						'buttons'=>array(
+							'formatting', '|', 'bold', 'italic', 'deleted', '|',
+							'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
+							'image', 'video', 'link', '|', 'html',
+						),
+					),
+				),
+			),
+		),
+
+		(...)
+	),
+);
+~~~
+
+### Image and file upload with default actions
+
+#### Step 1
+
+Let's assume we are using Post model and PostController.
+
+Create "uploads" folder to application root, add write permissions to it and add actions to PostController with default values.
+
+~~~
+class PostController extends Controller
+{
+	public function actions()
+	{
+		return array(
+			'fileUpload'=>'ext.redactor.actions.FileUpload',
+			'imageUpload'=>'ext.redactor.actions.ImageUpload',
+			'imageList'=>'ext.redactor.actions.ImageList',
+		);
+	}
+	...
+}
+~~~
+
+Or let actions create "uploads" folder automatically to application root folder.
+
+~~~
+class PostController extends Controller
+{
+	public function actions()
+	{
+		return array(
+			'fileUpload'=>array(
+				'class'=>'ext.redactor.actions.FileUpload',
+				'uploadCreate'=>true,
+			),
+			'imageUpload'=>array(
+				'class'=>'ext.redactor.actions.ImageUpload',
+				'uploadCreate'=>true,
+			),
+			'imageList'=>array(
+				'class'=>'ext.redactor.actions.ImageList',
+			),
+		);
+	}
+	...
+}
+~~~
+
+Or add actions to PostController with other custom values.
+
+~~~
+class PostController extends Controller
+{
+	public function actions()
+	{
+		return array(
+			'fileUpload'=>array(
+				'class'=>'ext.redactor.actions.FileUpload',
+				'uploadPath'=>'/path/to/uploads/folder',
+				'uploadUrl'=>'/url/to/uploads/folder',
+				'uploadCreate'=>true,
+				'permissions'=>0755,
+			),
+			'imageUpload'=>array(
+				'class'=>'ext.redactor.actions.ImageUpload',
+				'uploadPath'=>'/path/to/uploads/folder',
+				'uploadUrl'=>'/url/to/uploads/folder',
+				'uploadCreate'=>true,
+				'permissions'=>0755,
+			),
+			'imageList'=>array(
+				'class'=>'ext.redactor.actions.ImageList',
+				'uploadPath'=>'/path/to/uploads/folder',
+				'uploadUrl'=>'/url/to/uploads/folder',
+			),
+		);
+	}
+	...
+}
+~~~
+
+#### Step 2
+
+Add widget to the form view.
+
+~~~
+$attribute='content';
+$this->widget('ext.redactor.ERedactorWidget',array(
+	'model'=>$model,
+	'attribute'=>$attribute,
+	'options'=>array(
+		'fileUpload'=>Yii::app()->createUrl('post/fileUpload',array(
+			'attr'=>$attribute
+		)),
+		'fileUploadErrorCallback'=>new CJavaScriptExpression(
+			'function(obj,json) { alert(json.error); }'
+		),
+		'imageUpload'=>Yii::app()->createUrl('post/imageUpload',array(
+			'attr'=>$attribute
+		)),
+		'imageGetJson'=>Yii::app()->createUrl('post/imageList',array(
+			'attr'=>$attribute
+		)),
+		'imageUploadErrorCallback'=>new CJavaScriptExpression(
+			'function(obj,json) { alert(json.error); }'
+		),
+	),
+));
+~~~
+
 Changelog
 ------------------
 
-### v1.0
+### v1.2.0
+
+- Update readme.
+
+### v1.1.0
+
+- Default actions for image and file upload.
+
+### v1.0.0
 
 - Initial version.
 
