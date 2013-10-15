@@ -4,7 +4,7 @@
  * YcmModule
  * 
  * @uses CWebModule
- * @version 0.6.0-dev
+ * @version 1.0.0
  * @copyright 2012-2013
  * @author Jani Mikkonen <janisto@php.net>
  * @license public domain
