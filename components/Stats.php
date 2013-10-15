@@ -203,7 +203,7 @@ class Stats extends CComponent
 						$metric,
 						$params
 					);
-					Yii::app()->cache->set($cacheID,$data,3600);
+					Yii::app()->cache->set($cacheID,$data,1800);
 				}
 				return $data;
 			} else {
