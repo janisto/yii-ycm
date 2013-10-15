@@ -17,9 +17,9 @@ class DefaultController extends AdminController
 	 */
 	public function actionStats()
 	{
-		$days=30;
+		$days=30-1;
 		$startDate=date('Y-m-d',strtotime("-$days days"));
-		$endDate=date('Y-m-d',strtotime('-1 day'));
+		$endDate=date('Y-m-d');
 		$config=array();
 		if (!empty($this->module->analytics)
 			&& isset($this->module->analytics['clientId'])
@@ -38,7 +38,7 @@ class DefaultController extends AdminController
 			$config['endDate']=$endDate;
 			$stats=new Stats($config);
 			$this->render('stats',array(
-				'days'=>$days,
+				'days'=>$days+1,
 				'deviceData'=>$stats->deviceData,
 				'visitorData'=>$stats->visitorData,
 				'trafficData'=>$stats->trafficData,
