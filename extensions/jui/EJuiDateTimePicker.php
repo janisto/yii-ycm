@@ -20,32 +20,64 @@
  * </pre>
  *
  * @author Fadeev Ruslan <fadeevr@gmail.com>
+ * @author Jani Mikkonen <janisto@php.net>
  */
 
 Yii::import('zii.widgets.jui.CJuiDatePicker');
+
 class EJuiDateTimePicker extends CJuiDatePicker
 {
+    /**
+     * @var string path to assets.
+     */
+    protected $assetsPath;
+
+    /**
+     * @var string URL to assets.
+     */
+    protected $assetsUrl;
+
+    /**
+     * @var string widget mode. Use time, datetime or date.
+     */
     public $mode = 'datetime';
 
+    /**
+     * Init widget
+     */
     public function init()
     {
+        parent::init();
         if (!in_array($this->mode, array('date', 'time', 'datetime'))) {
-            throw new CException('EJuiDatePicker unknown mode "' . $this->mode . '". Use time, datetime or date!');
+            throw new CException('EJuiDateTimePicker - unknown mode: "' . $this->mode . '". Use time, datetime or date!');
         }
         if (empty($this->language)) {
-            $this->language = Yii::app()->language;
+            $this->language = str_replace('-', '_', strtolower(Yii::app()->language));
+            $parts = explode('_', $this->language);
+            if (count($parts) == 2) {
+                $this->language = $parts[0] .'-'. strtoupper($parts[1]);
+            }
+            if ($this->language == 'en-US') {
+                $this->language = 'en';
+            }
         }
-        parent::init();
+        if ($this->assetsPath === null) {
+            $this->assetsPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'assets';
+        }
+        if ($this->assetsUrl === null) {
+            $this->assetsUrl = Yii::app()->assetManager->publish($this->assetsPath);
+        }
     }
 
+    /**
+     * Run widget.
+     */
     public function run()
     {
         if ($this->mode == 'date') {
             parent::run();
-        }
-        else {
+        } else {
             list($name, $id) = $this->resolveNameID();
-
             if (isset($this->htmlOptions['id'])) {
                 $id = $this->htmlOptions['id'];
             } else {
@@ -54,7 +86,6 @@ class EJuiDateTimePicker extends CJuiDatePicker
             if (isset($this->htmlOptions['name'])) {
                 $name = $this->htmlOptions['name'];
             }
-
             if ($this->flat === false) {
                 if ($this->hasModel()) {
                     echo CHtml::activeTextField($this->model, $this->attribute, $this->htmlOptions);
@@ -70,47 +101,57 @@ class EJuiDateTimePicker extends CJuiDatePicker
                     echo CHtml::hiddenField($name, $this->value, $this->htmlOptions);
                     $this->options['defaultDate'] = $this->value;
                 }
-
                 if (!isset($this->options['onSelect'])) {
                     $this->options['onSelect'] = new CJavaScriptExpression("function( selectedDate ) { jQuery('#{$id}').val(selectedDate);}");
                 }
-
+                $this->options['altField'] = '#'. $id;
                 $id = $this->htmlOptions['id'] = $id . '_container';
-                $this->htmlOptions['name']     = $name . '_container';
-
+                $this->htmlOptions['name'] = $name . '_container';
                 echo CHtml::tag('div', $this->htmlOptions, '');
             }
 
-            //set now time..
+            // set current time
             $this->options['hour']   = date('H');
             $this->options['minute'] = date('i');
             $this->options['second'] = date('s');
-            $options                 = CJavaScript::encode($this->options);
-            $js                      = "jQuery('#{$id}').{$this->mode}picker($options);";
 
-            $assetsDir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'assets';
-            $assets    = Yii::app()->assetManager->publish($assetsDir);
-            $cs        = Yii::app()->clientScript;
-            $min       = YII_DEBUG ? '' : '.min';
-            $cs->registerCssFile($assets . '/jquery-ui-timepicker-addon.css');
-            $cs->registerScriptFile($assets . '/jquery-ui-timepicker-addon' . $min . '.js', CClientScript::POS_END);
-
-            if ($this->language != 'en') {
-                $this->registerScriptFile($this->i18nScriptFile);
-                //TimePicker localization load..
-                $i18nScriptFile = 'jquery-ui-timepicker-' . $this->language . '.js';
-                $i18nScriptPath = $assetsDir . DIRECTORY_SEPARATOR . 'localization' . DIRECTORY_SEPARATOR . $i18nScriptFile;
-                if (file_exists($i18nScriptPath)) {
-                    $cs->registerScriptFile($assets . '/localization/' . $i18nScriptFile, CClientScript::POS_END);
-                }
-				$cs->registerScript(__CLASS__ . '#i18n-' . $this->language, "jQuery.datepicker.setDefaults(jQuery.datepicker.regional['{$this->language}']);");
-                //$js = "jQuery('#{$id}').{$this->mode}picker(jQuery.extend(jQuery.datepicker.regional['{$this->language}'], {$options}));";
-            }
-            if (isset($this->defaultOptions)) {
-                $this->registerScriptFile($this->i18nScriptFile);
-                $cs->registerScript(__CLASS__, $this->defaultOptions !== null ? "jQuery.{$this->mode}picker.setDefaults(" . CJavaScript::encode($this->defaultOptions) . ');' : '');
-            }
-            $cs->registerScript(__CLASS__ . '#' . $id, $js);
+            $this->registerClientScript();
         }
+    }
+
+    /**
+     * Register CSS and scripts.
+     */
+    protected function registerClientScript()
+    {
+        $cs = Yii::app()->clientScript;
+        $cs->registerCssFile($this->assetsUrl . '/jquery-ui-timepicker-addon'. (YII_DEBUG ? '' : '.min') .'.css');
+        $cs->registerScriptFile($this->assetsUrl .'/jquery-ui-timepicker-addon'. (YII_DEBUG ? '' : '.min') .'.js', CClientScript::POS_END);
+
+        if ($this->language != 'en') {
+            $this->registerScriptFile($this->i18nScriptFile);
+            $cs->registerScriptFile($this->assetsUrl .'/lang/jquery-ui-timepicker-'. $this->language .'.js', CClientScript::POS_END);
+            $cs->registerScript(
+                __CLASS__ .'#i18n-'. $this->language,
+                "jQuery.datepicker.setDefaults(jQuery.datepicker.regional['{$this->language}']);",
+                CClientScript::POS_READY
+            );
+        }
+
+        if (isset($this->defaultOptions)) {
+            $this->registerScriptFile($this->i18nScriptFile);
+            $cs->registerScript(
+                __CLASS__ .'#mode-'. $this->mode,
+                'jQuery.'. $this->mode .'picker.setDefaults('. CJavaScript::encode($this->defaultOptions) .');',
+                CClientScript::POS_READY
+            );
+        }
+
+        $selector = '#'. $this->htmlOptions['id'];
+        $cs->registerScript(
+            __CLASS__ . $selector,
+            'jQuery('. CJavaScript::encode($selector) .').'. $this->mode .'picker('. CJavaScript::encode($this->options) .');',
+            CClientScript::POS_READY
+        );
     }
 }
