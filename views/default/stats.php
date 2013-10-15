@@ -22,9 +22,9 @@ if (count($parts)==2) {
 
 $cs=Yii::app()->clientScript;
 $baseUrl=$this->module->assetsUrl;
-$cs->registerCssFile($baseUrl.'/css/morris-0.4.2.min.css');
-$cs->registerScriptFile($baseUrl.'/js/raphael-2.1.0.min.js',CClientScript::POS_END);
-$cs->registerScriptFile($baseUrl.'/js/morris-0.4.2.min.js',CClientScript::POS_END);
+$cs->registerCssFile($baseUrl.'/css/morris.min.css');
+$cs->registerScriptFile($baseUrl.'/js/raphael.min.js',CClientScript::POS_END);
+$cs->registerScriptFile($baseUrl.'/js/morris.min.js',CClientScript::POS_END);
 $cs->registerCoreScript('jquery');
 $cs->registerCoreScript('jquery.ui');
 if ($lang!='en' && $lang!='en-US') {
