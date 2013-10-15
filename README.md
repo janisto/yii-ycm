@@ -46,6 +46,16 @@ Update
 Changelog
 ------------------
 
+### v1.0.0
+
+- Fix: override options in all form widgets.
+- Add support for taggable behavior.
+- Add Chinese translation.
+- Update Finnish translation.
+- Improve Google Analytics statistics page.
+- Update libraries.
+- Update Composer support.
+
 ### v0.5.0
 
 - Google Analytics statistics page.
