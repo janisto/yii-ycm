@@ -4,7 +4,7 @@
  * Chosen widget
  *
  * @author Jani Mikkonen <janisto@php.net>
- * @version 1.4.0
+ * @version 1.5.0
  * @license public domain (http://unlicense.org)
  * @package extensions.chosen
  * @link http://harvesthq.github.com/chosen/
@@ -36,7 +36,7 @@ class EChosenWidget extends CWidget
 	/**
 	 * @var string select selector for jQuery
 	 */
-	public $selector = '.chzn-select';
+	public $selector = '.chosen-select';
 
 	/**
 	 * Init widget
@@ -67,7 +67,7 @@ class EChosenWidget extends CWidget
 					'js/chosen.jquery' . (YII_DEBUG ? '' : '.min') . '.js',
 				),
 				'css' => array(
-					'css/chosen.css',
+					'css/chosen' . (YII_DEBUG ? '' : '.min') . '.css',
 				),
 				'depends' => array(
 					'jquery',

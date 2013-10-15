@@ -329,7 +329,7 @@ class YcmModule extends CWebModule
 						'Choose {name}',
 						array('{name}'=>$model->getAttributeLabel($attribute))
 					),
-					'class'=>'span5 chzn-select',
+					'class'=>'span5 chosen-select',
 				);
 				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');
@@ -343,7 +343,7 @@ class YcmModule extends CWebModule
 						array('{name}'=>$model->getAttributeLabel($attribute))
 					),
 					'multiple'=>'multiple',
-					'class'=>'span5 chzn-select',
+					'class'=>'span5 chosen-select',
 				);
 				$options=$this->getAttributeOptions($attribute,$options);
 				$this->controller->widget($this->name.'.extensions.chosen.EChosenWidget');

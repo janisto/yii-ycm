@@ -39,6 +39,11 @@ $this->widget('ext.chosen.EChosenWidget',array(
 Changelog
 ------------------
 
+### v1.5.0
+
+- Chosen updated to version 1.0.0.
+- Default selector for jQuery change to ".chosen-select".
+
 ### v1.4.0
 
 - Chosen updated to version 0.9.13.
