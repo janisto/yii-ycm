@@ -87,7 +87,7 @@ Update
 Changelog
 ------------------
 
-### v1.1.0-dev
+### v1.1.0
 
 - Add German translation.
 - Fix: behaviour class path.
