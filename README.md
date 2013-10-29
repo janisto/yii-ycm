@@ -46,6 +46,11 @@ Update
 Changelog
 ------------------
 
+### v1.1.0-dev
+
+- Add German translation.
+- Fix: behaviour class path.
+
 ### v1.0.0
 
 - Fix: override options in all form widgets.
