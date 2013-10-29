@@ -38,6 +38,47 @@ Installation
 	),
 ~~~
 
+You can also use [composer](http://getcomposer.org/doc/).
+
+- Require the package.
+
+~~~
+{
+	"name": "app-name",
+	"description": "App description",
+	"type": "project",
+	"prefer-stable": true,
+	"require": {
+		"php": ">=5.3.0",
+		"yiisoft/yii": "1.1.14",
+		"janisto/yii-ycm": "1.1.0",
+	}
+}
+~~~
+
+- Add vendor path to your configuration file, enable module, set username, password and models you want to manage.
+
+~~~
+	'aliases'=>array(
+		'vendor'=>realpath(__DIR__ . '/../../vendor'),
+	),
+	'modules'=>array(
+		...
+		'ycm'=>array(
+			'class' =>'vendor.janisto.yii-ycm.YcmModule',
+			'username'=>'YOUR USERNAME',
+			'password'=>'YOUR PASSWORD',
+			'registerModels'=>array(
+				//'application.models.Blog', // one model
+				'application.models.*', // all models in folder
+			),
+			'uploadCreate'=>true, // create upload folder automatically
+			'redactorUpload'=>true, // enable Redactor image upload
+		),
+		...
+	),
+~~~
+
 Update
 ------------------
 
