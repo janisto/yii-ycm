@@ -87,6 +87,10 @@ Update
 Changelog
 ------------------
 
+### v1.1.1
+
+- Fix time format.
+
 ### v1.1.0
 
 - Add German translation.
