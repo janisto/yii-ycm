@@ -4,7 +4,7 @@
  * YcmModule
  * 
  * @uses CWebModule
- * @version 1.1.0
+ * @version 1.1.1
  * @copyright 2012-2013
  * @author Jani Mikkonen <janisto@php.net>
  * @license public domain
@@ -181,7 +181,7 @@ class YcmModule extends CWebModule
 						'class'=>'size-medium',
 					),
 					'options'=>array(
-						'timeFormat'=>'hh:mm:ss',
+						'timeFormat'=>'HH:mm:ss',
 						'showSecond'=>true,
 					),
 				);
@@ -213,7 +213,7 @@ class YcmModule extends CWebModule
 					),
 					'options'=>array(
 						'dateFormat'=>'yy-mm-dd',
-						'timeFormat'=>'hh:mm:ss',
+						'timeFormat'=>'HH:mm:ss',
 						'showSecond'=>true,
 						//'stepHour'=>'1',
 						//'stepMinute'=>'10',
