@@ -4,8 +4,8 @@
  * YcmModule
  * 
  * @uses CWebModule
- * @version 1.1.1
- * @copyright 2012-2013
+ * @version 1.1.2-dev
+ * @copyright 2012-2014
  * @author Jani Mikkonen <janisto@php.net>
  * @license public domain
  */
@@ -48,7 +48,11 @@ class YcmModule extends CWebModule
 				));
 			}
 		}
-		$model->attachBehavior('admin',array('class'=>$this->name.'.behaviors.FileBehavior'));
+		$model->attachBehavior('admin',array(
+			'class'=>$this->name.'.behaviors.FileBehavior',
+			'uploadPath'=>$this->uploadPath,
+			'uploadUrl'=>$this->uploadUrl,
+		));
 		return $model;
 	}
 
