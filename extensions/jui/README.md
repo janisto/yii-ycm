@@ -1,4 +1,4 @@
-CJuiDateTimePicker
+EJuiDateTimePicker
 ==================
 
-CJuiDateTimePicker adds timing to the standard zii.widgets.jui.CJuiDatePicke
+EJuiDateTimePicker adds timing to the standard zii.widgets.jui.CJuiDatePicker
