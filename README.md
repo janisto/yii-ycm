@@ -79,6 +79,31 @@ You can also use [composer](http://getcomposer.org/doc/).
 	),
 ~~~
 
+- Add FileBehavior to your models if you are using file or image features. Add uploadPath and uploadUrl if you are not using the default uploads folder.
+
+~~~
+	...
+	function behaviors() {
+	    return array(
+			'file' => array(
+				'class'=>'application.modules.ycm.behaviors.FileBehavior',
+				//'uploadPath'=>'/optional/path/to/uploads',
+				//'uploadUrl'=>'http://optional.cdn.domain.com/uploads/path',
+			),
+	    );
+	}
+	...
+~~~
+
+- FileBehavior methods:
+
+~~~
+$model = new Model;
+echo $model->getFilePath('attribute');
+echo $model->getFileUrl('attribute');
+echo $model->getAbsoluteFileUrl('attribute');
+~~~
+
 Update
 ------------------
 
@@ -86,6 +111,11 @@ Update
 
 Changelog
 ------------------
+
+### v1.1.2
+
+- Improve FileBehavior
+- Update libraries.
 
 ### v1.1.1
 
