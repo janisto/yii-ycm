@@ -9,8 +9,26 @@ $this->pageTitle=Yii::t('YcmModule.ycm','Administration');
 	<?php foreach ($models as $model): ?>
 		<div class="btn-toolbar">
 			<?php
+			$buttons=array();
 			$download=false;
 			$downloadItems=array();
+
+			array_push($buttons,array(
+				'type'=>'primary',
+				'label'=>$this->module->getAdminName($model),
+				'url'=>$this->createUrl('model/list',array('name'=>$model)),
+			));
+			if ($this->module->getHideCreate($model) === false) {
+				array_push($buttons,array(
+					'label'=>Yii::t('YcmModule.ycm','Create'),
+					'url'=>$this->createUrl('model/create',array('name'=>$model)),
+				));
+			}
+			array_push($buttons,array(
+				'label'=>Yii::t('YcmModule.ycm','List'),
+				'url'=>$this->createUrl('model/list',array('name'=>$model)),
+			));
+
 			if ($this->module->getDownloadExcel($model)) {
 				$download=true;
 				array_push($downloadItems,array(
@@ -32,24 +50,12 @@ $this->pageTitle=Yii::t('YcmModule.ycm','Administration');
 					'url'=>$this->createUrl('model/csv',array('name'=>$model)),
 				));
 			}
+
 			$this->widget('bootstrap.widgets.TbButtonGroup',array(
 				'type'=>'', // '', 'primary', 'info', 'success', 'warning', 'danger' or 'inverse'
-				'buttons'=>array(
-					array(
-						'type'=>'primary',
-						'label'=>$this->module->getAdminName($model),
-						'url'=>$this->createUrl('model/list',array('name'=>$model)),
-					),
-					array(
-						'label'=>Yii::t('YcmModule.ycm','Create'),
-						'url'=>$this->createUrl('model/create',array('name'=>$model)),
-					),
-					array(
-						'label'=>Yii::t('YcmModule.ycm','List'),
-						'url'=>$this->createUrl('model/list',array('name'=>$model)),
-					),
-				),
+				'buttons'=>$buttons,
 			));
+
 			if ($download) {
 				$this->widget('bootstrap.widgets.TbButtonGroup',array(
 					'type'=>'',

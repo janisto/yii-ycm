@@ -146,6 +146,26 @@ class ModelController extends AdminController
 		}
 
 		$urlPrefix='Yii::app()->createUrl("'.$this->module->name.'/model/';
+		$columns=array(
+			'class'=>'bootstrap.widgets.TbButtonColumn',
+			'updateButtonUrl'=>$urlPrefix.'update",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
+			'deleteButtonUrl'=>$urlPrefix.'delete",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
+			'viewButtonUrl'=>$urlPrefix.'view",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
+			'viewButtonOptions'=>array(
+				'style'=>'display:none;',
+			),
+		);
+		if ($this->module->getHideUpdate($model) === true) {
+			$columns['updateButtonOptions'] = array(
+				'style'=>'display:none;',
+			);
+		}
+		if ($this->module->getHideDelete($model) === true) {
+			$columns['deleteButtonOptions'] = array(
+				'style'=>'display:none;',
+			);
+		}
+
 		$data2=array(
 			'id'=>'objects-grid',
 			'type'=>'striped bordered condensed',
@@ -159,17 +179,7 @@ class ModelController extends AdminController
 				'nextPageLabel'=>'&rang;',
 				'lastPageLabel'=>'&rang;&rang;',
 			),
-			'columns'=>array(
-				array(
-					'class'=>'bootstrap.widgets.TbButtonColumn',
-					'updateButtonUrl'=>$urlPrefix.'update",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
-					'deleteButtonUrl'=>$urlPrefix.'delete",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
-					'viewButtonUrl'=>$urlPrefix.'view",array("name"=>"'.get_class($model).'","pk"=>$data->primaryKey))',
-					'viewButtonOptions'=>array(
-						'style'=>'display:none;',
-					),
-				),
-			),
+			'columns'=>array($columns),
 		);
 
 		$data=array_merge_recursive($data1,$data2);

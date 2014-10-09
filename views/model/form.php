@@ -32,25 +32,31 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 		?>
 		<div class="form-actions">
 			<?php
-			$buttons=array(
-				array(
-					'buttonType'=>'submit',
-					'type'=>'primary',
-					'label'=>Yii::t('YcmModule.ycm','Save'),
-					'htmlOptions'=>array('name'=>'_save')
-				),
-				array(
-					'buttonType'=>'submit',
-					'label'=>Yii::t('YcmModule.ycm','Save and add another'),
-					'htmlOptions'=>array('name'=>'_addanother')
-				),
-				array(
-					'buttonType'=>'submit',
-					'label'=>Yii::t('YcmModule.ycm','Save and continue editing'),
-					'htmlOptions'=>array('name'=>'_continue')
-				),
-			);
-			if (!$model->isNewRecord) {
+			if (($this->module->getHideCreate($model) === true && Yii::app()->controller->action->id == 'create') ||
+				($this->module->getHideUpdate($model) === true && Yii::app()->controller->action->id == 'update')) {
+				$buttons=array();
+			} else {
+				$buttons=array(
+					array(
+						'buttonType'=>'submit',
+						'type'=>'primary',
+						'label'=>Yii::t('YcmModule.ycm','Save'),
+						'htmlOptions'=>array('name'=>'_save')
+					),
+					array(
+						'buttonType'=>'submit',
+						'label'=>Yii::t('YcmModule.ycm','Save and add another'),
+						'htmlOptions'=>array('name'=>'_addanother')
+					),
+					array(
+						'buttonType'=>'submit',
+						'label'=>Yii::t('YcmModule.ycm','Save and continue editing'),
+						'htmlOptions'=>array('name'=>'_continue')
+					),
+				);
+			}
+
+			if (!$model->isNewRecord && $this->module->getHideDelete($model) === false) {
 				array_push($buttons,array(
 					'buttonType'=>'link',
 					'type'=>'danger',
@@ -66,6 +72,7 @@ $attributes=array_filter(array_unique(array_map('trim',$attributes)));
 					)
 				));
 			}
+
 			$this->widget('bootstrap.widgets.TbButtonGroup',array(
 				'type'=>'',
 				'buttons'=>$buttons,

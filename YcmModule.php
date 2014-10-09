@@ -754,6 +754,60 @@ class YcmModule extends CWebModule
 	}
 
 	/**
+	 * Hide create model action?
+	 *
+	 * @param mixed $model
+	 * @return bool
+	 */
+	public function getHideCreate($model)
+	{
+		if (is_string($model)) {
+			$model=new $model;
+		}
+		if (isset($model->hideCreateAction)) {
+			return $model->hideCreateAction;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Hide update model action?
+	 *
+	 * @param mixed $model
+	 * @return bool
+	 */
+	public function getHideUpdate($model)
+	{
+		if (is_string($model)) {
+			$model=new $model;
+		}
+		if (isset($model->hideUpdateAction)) {
+			return $model->hideUpdateAction;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Hide delete model action?
+	 *
+	 * @param mixed $model
+	 * @return bool
+	 */
+	public function getHideDelete($model)
+	{
+		if (is_string($model)) {
+			$model=new $model;
+		}
+		if (isset($model->hideDeleteAction)) {
+			return $model->hideDeleteAction;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * @return string the base URL that contains all published asset files of the module.
 	 */
 	public function getAssetsUrl()

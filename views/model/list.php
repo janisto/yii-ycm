@@ -9,19 +9,21 @@ $this->pageTitle=$title;
 
 <div class="btn-toolbar">
 	<?php
-	$this->widget('bootstrap.widgets.TbButtonGroup',array(
-		'type'=>'',
-		'buttons'=>array(
-			array(
-				'type'=>'primary',
-				'label'=>Yii::t('YcmModule.ycm',
-					'Create {name}',
-					array('{name}'=>$this->module->getSingularName($model))
+	if ($this->module->getHideCreate($model) === false) {
+		$this->widget('bootstrap.widgets.TbButtonGroup',array(
+			'type'=>'',
+			'buttons'=>array(
+				array(
+					'type'=>'primary',
+					'label'=>Yii::t('YcmModule.ycm',
+						'Create {name}',
+						array('{name}'=>$this->module->getSingularName($model))
+					),
+					'url'=>$this->createUrl('model/create',array('name'=>get_class($model))),
 				),
-				'url'=>$this->createUrl('model/create',array('name'=>get_class($model))),
 			),
-		),
-	));
+		));
+	}
 	?>
 </div>
 <?php $this->widget('bootstrap.widgets.TbGridView',$data); ?>
