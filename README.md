@@ -114,8 +114,9 @@ Changelog
 
 ### v1.1.3
 
-- Options to disable create, update and/or delete actions for a model
+- Options to disable create, update and/or delete actions for a model.
 - Update libraries.
+- Fix: analytics setup forms with csrf validation.
 
 ### v1.1.2
 
