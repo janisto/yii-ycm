@@ -115,6 +115,7 @@ Changelog
 ### v1.1.3
 
 - Options to disable create, update and/or delete actions for a model
+- Update libraries.
 
 ### v1.1.2
 
