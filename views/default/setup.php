@@ -40,11 +40,18 @@ Yii::app()->session->open();
 		}
 ?>
 		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>3)); ?></h4>
-		<form method="post" class="form-horizontal">
+		<?php
+		$form=$this->beginWidget('CActiveForm', array(
+				'enableAjaxValidation'=>false,
+				'htmlOptions'=>array(
+					'class'=>'form-horizontal'
+				),
+			));
+		?>
 			<p><?php echo Yii::t('YcmModule.ycm','Select profile.'); ?></p>
 			<p><?php echo CHtml::dropDownList('profile','',$data); ?></p>
 			<p><button type="submit" class="btn"><?php echo Yii::t('YcmModule.ycm','Next'); ?></button></p>
-		</form>
+		<?php $this->endWidget(); ?>
 <?php
 	} else if (Yii::app()->request->getPost('profile',false)!==false) {
 		$selected=Yii::app()->request->getPost('profile');
@@ -65,7 +72,14 @@ Yii::app()->session->open();
 ),
 ...
 		</pre>
-		<form method="post" class="form-horizontal">
+		<?php
+		$form=$this->beginWidget('CActiveForm', array(
+				'enableAjaxValidation'=>false,
+				'htmlOptions'=>array(
+					'class'=>'form-horizontal'
+				),
+			));
+		?>
 			<div class="control-group">
 				<label class="control-label" for="trackingId">trackingId</label>
 				<div class="controls">
@@ -84,7 +98,7 @@ Yii::app()->session->open();
 					<input class="span5" type="text" id="accessToken" value='<?php echo $accessToken; ?>' />
 				</div>
 			</div>
-		</form>
+		<?php $this->endWidget(); ?>
 		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>5)); ?></h4>
 		<p><?php echo CHtml::link(Yii::t('YcmModule.ycm','Reload page'),array('/'.$this->module->name.'/default/stats'),array('class'=>'btn btn-primary')); ?></p>
 <?php
@@ -95,10 +109,17 @@ Yii::app()->session->open();
 		<p><?php echo Yii::t('YcmModule.ycm','Connect with your Google Analytics account.'); ?></p>
 		<p><a class="btn btn-primary" href="#" onclick="auth();"><?php echo Yii::t('YcmModule.ycm','Connect'); ?></a></p>
 		<h4><?php echo Yii::t('YcmModule.ycm','Step {num}',array('{num}'=>2)); ?></h4>
-		<form method="post" class="form-horizontal">
+		<?php
+		$form=$this->beginWidget('CActiveForm', array(
+				'enableAjaxValidation'=>false,
+				'htmlOptions'=>array(
+					'class'=>'form-horizontal'
+				),
+			));
+		?>
 			<label for="code"><?php echo Yii::t('YcmModule.ycm','Paste authorization code here:'); ?></label>
 			<p><input class="span5" type="text" name="code" id="code"></p>
 			<p><button type="submit" class="btn"><?php echo Yii::t('YcmModule.ycm','Next'); ?></button></p>
-		</form>
+		<?php $this->endWidget(); ?>
 	</div>
 <?php } ?>
