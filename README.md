@@ -112,6 +112,10 @@ Update
 Changelog
 ------------------
 
+### v1.1.4
+
+- Add Russian translation.
+
 ### v1.1.3
 
 - Options to disable create, update and/or delete actions for a model.
